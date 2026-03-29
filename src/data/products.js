@@ -14,15 +14,7 @@
  *   category: "품목",            ← 아래 품목 중 하나만 정확히 입력
  *   seller: "이름",              ← 판매자 이름 (관리자 모드·집계용)
  *   description: "설명",         ← 짧은 설명 (없으면 "" 로 두면 됨)
- *   imageCount: 숫자,            ← 이미지 장수 (없으면 생략 또는 0)
- *
- * ── 이미지 사용법 ──
- *   imageCount: 0  →  이모지 플레이스홀더 표시 (기본값)
- *   imageCount: 1  →  /public/images/{id}-1.jpg 파일 1장 표시
- *   imageCount: 3  →  /public/images/{id}-1.jpg, {id}-2.jpg, {id}-3.jpg 스와이프 캐러셀
- *
- *   예) id가 5인 상품에 이미지 2장 → imageCount: 2
- *       파일명: /public/images/5-1.png, /public/images/5-2.png
+ *   imageCount: 숫자,            ← 이미지 장수 (없으면 생략 → {id}-1.png 자동 시도)
  * },
  *
  * ── 캐릭터 종류 (character 에 쓸 수 있는 값) ──
@@ -41,11 +33,15 @@
  *   "뱃지"
  *   "잡화"
  *   "다꾸"
+ *   "화장품"
  *
  * ── 이미지 사용법 ──
- *   1. /public/images/ 폴더에 이미지 파일을 넣으세요.
- *   2. image: "/images/파일명.jpg" 형식으로 경로를 입력하세요.
- *   3. 이미지가 없으면 image: null 로 두면 이모지가 대신 표시됩니다.
+ *   imageCount 생략  →  {id}-1.png 자동 시도, 파일 없으면 이모지 표시
+ *   imageCount: 0    →  무조건 이모지 표시
+ *   imageCount: 3    →  {id}-1.png, {id}-2.png, {id}-3.png 스와이프 캐러셀
+ *
+ *   예) id 5번 상품에 이미지 2장 → imageCount: 2
+ *       파일: /public/images/5-1.png, /public/images/5-2.png
  *
  * =============================================
  */
@@ -53,7 +49,7 @@
 const products = [
   {
     id: 1,
-    name: "산리오 헬로키티 초코에그 2~3세트",
+    name: "산리오 헬로키티 초코에그 세트1",
     price: 2000,
     character: "산리오",
     category: "가챠",
@@ -63,6 +59,26 @@ const products = [
   },
   {
     id: 2,
+    name: "산리오 헬로키티 초코에그 세트2",
+    price: 2000,
+    character: "산리오",
+    category: "가챠",
+    seller: "서현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 3,
+    name: "산리오 헬로키티 초코에그 세트3",
+    price: 2000,
+    character: "산리오",
+    category: "가챠",
+    seller: "서현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 4,
     name: "MIKE 고양이 가챠",
     price: 1000,
     character: "기타",
@@ -72,7 +88,7 @@ const products = [
     image: null,
   },
   {
-    id: 3,
+    id: 5,
     name: "언제오려나 컬러풀젤리 오렌지 가챠",
     price: 1000,
     character: "기타",
@@ -82,7 +98,7 @@ const products = [
     image: null,
   },
   {
-    id: 4,
+    id: 6,
     name: "산리오 헬로키티 LED 가챠",
     price: 1500,
     character: "산리오",
@@ -92,7 +108,7 @@ const products = [
     image: null,
   },
   {
-    id: 5,
+    id: 7,
     name: "분홍 PVC 파우치",
     price: 1000,
     character: "기타",
@@ -102,7 +118,7 @@ const products = [
     image: null,
   },
   {
-    id: 6,
+    id: 8,
     name: "치이카와 쿠리만쥬 가챠",
     price: 1000,
     character: "치이카와",
@@ -112,7 +128,7 @@ const products = [
     image: null,
   },
   {
-    id: 7,
+    id: 9,
     name: "치이카와 모몽가 스탑워치",
     price: 2000,
     character: "치이카와",
@@ -122,7 +138,7 @@ const products = [
     image: null,
   },
   {
-    id: 8,
+    id: 10,
     name: "찢었다 도장(+잉크 리필)",
     price: 2500,
     character: "기타",
@@ -133,7 +149,7 @@ const products = [
     image: null,
   },
   {
-    id: 9,
+    id: 11,
     name: "이걸해냄 만년 도장",
     price: 2500,
     character: "기타",
@@ -144,7 +160,7 @@ const products = [
     image: null,
   },
   {
-    id: 10,
+    id: 12,
     name: "위베어베어스 리버시블 파우치",
     price: 4000,
     character: "기타",
@@ -155,7 +171,7 @@ const products = [
     image: null,
   },
   {
-    id: 11,
+    id: 13,
     name: "해리포터 신동사 니플스 뱃지",
     price: 2000,
     character: "해리포터",
@@ -166,7 +182,7 @@ const products = [
     image: null,
   },
   {
-    id: 12,
+    id: 14,
     name: "해리포터 always 뱃지",
     price: 2000,
     character: "해리포터",
@@ -176,7 +192,7 @@ const products = [
     image: null,
   },
   {
-    id: 13,
+    id: 15,
     name: "해리포터 펠릭스 펠리시스 뱃지",
     price: 2000,
     character: "해리포터",
@@ -186,7 +202,7 @@ const products = [
     image: null,
   },
   {
-    id: 14,
+    id: 16,
     name: "해리포터 퀴디치 뱃지",
     price: 2500,
     character: "해리포터",
@@ -196,7 +212,7 @@ const products = [
     image: null,
   },
   {
-    id: 15,
+    id: 17,
     name: "해리포터 생일 케이크 뱃지",
     price: 1500,
     character: "해리포터",
@@ -206,7 +222,7 @@ const products = [
     image: null,
   },
   {
-    id: 16,
+    id: 18,
     name: "스티븐유니버스 스티븐 젬 뱃지",
     price: 3000,
     character: "기타",
@@ -216,7 +232,7 @@ const products = [
     image: null,
   },
   {
-    id: 17,
+    id: 19,
     name: "스티븐유니버스 라이언 뱃지",
     price: 2000,
     character: "기타",
@@ -226,7 +242,7 @@ const products = [
     image: null,
   },
   {
-    id: 18,
+    id: 20,
     name: "라라랜드 셉스 뱃지",
     price: 2000,
     character: "기타",
@@ -236,7 +252,7 @@ const products = [
     image: null,
   },
   {
-    id: 19,
+    id: 21,
     name: "라라랜드 듀얼 뱃지",
     price: 3000,
     character: "기타",
@@ -246,7 +262,7 @@ const products = [
     image: null,
   },
   {
-    id: 20,
+    id: 22,
     name: "기묘한이야기 헬파이어 뱃지",
     price: 2000,
     character: "기타",
@@ -256,7 +272,7 @@ const products = [
     image: null,
   },
   {
-    id: 21,
+    id: 23,
     name: "센과치히로의행방불명 치히로 편지 뱃지",
     price: 2000,
     character: "기타",
@@ -266,7 +282,7 @@ const products = [
     image: null,
   },
   {
-    id: 22,
+    id: 24,
     name: "뱅드림 하로하피 미셸 아크릴 키링",
     price: 4000,
     character: "뱅드림",
@@ -276,7 +292,7 @@ const products = [
     image: null,
   },
   {
-    id: 23,
+    id: 25,
     name: "커비 피규어",
     price: 1500,
     character: "기타",
@@ -286,29 +302,29 @@ const products = [
     image: null,
   },
   {
-    id: 24,
+    id: 26,
     name: "미쿠 파티온데스크 피규어",
     price: 5000,
     character: "기타",
     category: "피규어",
     seller: "서현",
     description: "",
-    image: null,
     imageCount: 2,
+    image: null,
   },
   {
-    id: 25,
+    id: 27,
     name: "히구치유코 보리스 피규어",
     price: 1500,
     character: "기타",
     category: "피규어",
     seller: "서현",
     description: "",
-    image: null,
     imageCount: 2,
+    image: null,
   },
   {
-    id: 26,
+    id: 28,
     name: "치이카와 하치와레 플러피 피규어",
     price: 2500,
     character: "치이카와",
@@ -318,7 +334,7 @@ const products = [
     image: null,
   },
   {
-    id: 27,
+    id: 29,
     name: "MEKAMEE SEASTAR 야광 주황 별 키링",
     price: 1500,
     character: "기타",
@@ -328,7 +344,7 @@ const products = [
     image: null,
   },
   {
-    id: 28,
+    id: 30,
     name: "네잎클로버 키링",
     price: 1000,
     character: "기타",
@@ -338,7 +354,7 @@ const products = [
     image: null,
   },
   {
-    id: 29,
+    id: 31,
     name: "앙스타 사쿠마 리츠 핀버튼 뱃지",
     price: 1000,
     character: "기타",
@@ -348,7 +364,7 @@ const products = [
     image: null,
   },
   {
-    id: 30,
+    id: 32,
     name: "모뇨치타 교자짱 아크릴 키링",
     price: 2000,
     character: "기타",
@@ -358,7 +374,7 @@ const products = [
     image: null,
   },
   {
-    id: 31,
+    id: 33,
     name: "얼음 피크민 메지루시 키링",
     price: 2000,
     character: "기타",
@@ -368,7 +384,7 @@ const products = [
     image: null,
   },
   {
-    id: 32,
+    id: 34,
     name: "뱅드림 로젤리아 유키나 부쿠부 키링",
     price: 2000,
     character: "뱅드림",
@@ -378,7 +394,7 @@ const products = [
     image: null,
   },
   {
-    id: 33,
+    id: 35,
     name: "뱅드림 로젤리아 아코 부쿠부 키링",
     price: 2000,
     character: "뱅드림",
@@ -388,7 +404,7 @@ const products = [
     image: null,
   },
   {
-    id: 34,
+    id: 36,
     name: "미스터 드릴러 호리 타이조 메지루시 키링",
     price: 1000,
     character: "기타",
@@ -398,7 +414,7 @@ const products = [
     image: null,
   },
   {
-    id: 35,
+    id: 37,
     name: "미스터 드릴러 안나 호텐마이어 메지루시 키링",
     price: 1000,
     character: "기타",
@@ -408,7 +424,7 @@ const products = [
     image: null,
   },
   {
-    id: 36,
+    id: 38,
     name: "치이카와 시사 사자 머리끈",
     price: 1500,
     character: "치이카와",
@@ -418,7 +434,7 @@ const products = [
     image: null,
   },
   {
-    id: 37,
+    id: 39,
     name: "오리 인형 키링",
     price: 1000,
     character: "기타",
@@ -428,7 +444,7 @@ const products = [
     image: null,
   },
   {
-    id: 38,
+    id: 40,
     name: "덕새 7cm 인형 키링",
     price: 3000,
     character: "기타",
@@ -438,7 +454,7 @@ const products = [
     image: null,
   },
   {
-    id: 39,
+    id: 41,
     name: "빤쮸토끼 인형 키링",
     price: 2000,
     character: "기타",
@@ -448,7 +464,7 @@ const products = [
     image: null,
   },
   {
-    id: 40,
+    id: 42,
     name: "메론빵 거북이 인형 키링",
     price: 1500,
     character: "기타",
@@ -458,7 +474,7 @@ const products = [
     image: null,
   },
   {
-    id: 41,
+    id: 43,
     name: "죠죠 2부 죠셉 아크릴 키링",
     price: 2000,
     character: "죠죠",
@@ -468,7 +484,7 @@ const products = [
     image: null,
   },
   {
-    id: 42,
+    id: 44,
     name: "죠죠 2부 시저 아크릴 키링",
     price: 2000,
     character: "죠죠",
@@ -478,7 +494,7 @@ const products = [
     image: null,
   },
   {
-    id: 43,
+    id: 45,
     name: "죠죠 3부 이기 아크릴 키링",
     price: 2000,
     character: "죠죠",
@@ -488,7 +504,7 @@ const products = [
     image: null,
   },
   {
-    id: 44,
+    id: 46,
     name: "히라가나 아 인형 키링",
     price: 1000,
     character: "기타",
@@ -498,7 +514,7 @@ const products = [
     image: null,
   },
   {
-    id: 45,
+    id: 47,
     name: "카피바라 인형 키링",
     price: 1000,
     character: "기타",
@@ -508,7 +524,7 @@ const products = [
     image: null,
   },
   {
-    id: 46,
+    id: 48,
     name: "여우 인형 키링",
     price: 1000,
     character: "기타",
@@ -518,7 +534,7 @@ const products = [
     image: null,
   },
   {
-    id: 47,
+    id: 49,
     name: "계란말이 인형 키링",
     price: 1000,
     character: "기타",
@@ -528,7 +544,7 @@ const products = [
     image: null,
   },
   {
-    id: 48,
+    id: 50,
     name: "치이카와 페어리 인형 키링",
     price: 2000,
     character: "치이카와",
@@ -538,17 +554,17 @@ const products = [
     image: null,
   },
   {
-    id: 49,
+    id: 51,
     name: "산리오 포챠코 인형 키링",
     price: 1500,
-    character: "기타",
+    character: "산리오",
     category: "인형키링",
     seller: "서현",
     description: "",
     image: null,
   },
   {
-    id: 50,
+    id: 52,
     name: "메론 소다 인형 키링",
     price: 1000,
     character: "기타",
@@ -558,7 +574,7 @@ const products = [
     image: null,
   },
   {
-    id: 51,
+    id: 53,
     name: "죠죠 3부 죠셉 러버스트랩 키링",
     price: 2000,
     character: "죠죠",
@@ -568,7 +584,7 @@ const products = [
     image: null,
   },
   {
-    id: 52,
+    id: 54,
     name: "죠죠 3부 하이어로팬트 러버스트랩 키링",
     price: 2000,
     character: "죠죠",
@@ -578,7 +594,7 @@ const products = [
     image: null,
   },
   {
-    id: 53,
+    id: 55,
     name: "죠죠 4부 뵤옹 곶 피규어 스탬프 쿠지 C상",
     price: 2000,
     character: "죠죠",
@@ -588,7 +604,7 @@ const products = [
     image: null,
   },
   {
-    id: 54,
+    id: 56,
     name: "교자만두 가챠",
     price: 1500,
     character: "기타",
@@ -598,17 +614,18 @@ const products = [
     image: null,
   },
   {
-    id: 55,
+    id: 57,
     name: "산리오 유령 키티 가챠",
     price: 2000,
     character: "산리오",
     category: "가챠",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
-    id: 56,
+    id: 58,
     name: "치이카와 하치와레 페이스 체인지 피규어",
     price: 2000,
     character: "치이카와",
@@ -618,7 +635,7 @@ const products = [
     image: null,
   },
   {
-    id: 57,
+    id: 59,
     name: "다마고치 미미치 가챠",
     price: 1500,
     character: "기타",
@@ -628,7 +645,7 @@ const products = [
     image: null,
   },
   {
-    id: 58,
+    id: 60,
     name: "치이카와 3형제 가챠 세트",
     price: 3000,
     character: "치이카와",
@@ -638,7 +655,7 @@ const products = [
     image: null,
   },
   {
-    id: 59,
+    id: 61,
     name: "산리오 바츠마루 펭귄 가챠",
     price: 1000,
     character: "산리오",
@@ -648,7 +665,7 @@ const products = [
     image: null,
   },
   {
-    id: 60,
+    id: 62,
     name: "리락쿠마 키이로이토리 라이트 가챠",
     price: 2000,
     character: "산리오",
@@ -658,7 +675,7 @@ const products = [
     image: null,
   },
   {
-    id: 61,
+    id: 63,
     name: "산리오 폼폼푸린 디저트 가챠",
     price: 1000,
     character: "산리오",
@@ -668,7 +685,7 @@ const products = [
     image: null,
   },
   {
-    id: 62,
+    id: 64,
     name: "뿌이뿌이모루카 포테토 가챠",
     price: 3000,
     character: "기타",
@@ -678,7 +695,7 @@ const products = [
     image: null,
   },
   {
-    id: 63,
+    id: 65,
     name: "카드캡터체리 교복 토르소 가챠",
     price: 4000,
     character: "기타",
@@ -688,7 +705,7 @@ const products = [
     image: null,
   },
   {
-    id: 64,
+    id: 66,
     name: "죠죠 1부 스피드웨건 사운드드롭 가챠",
     price: 4000,
     character: "죠죠",
@@ -698,7 +715,7 @@ const products = [
     image: null,
   },
   {
-    id: 65,
+    id: 67,
     name: "웨이크메이크 아이라이너",
     price: 1000,
     character: "기타",
@@ -708,7 +725,7 @@ const products = [
     image: null,
   },
   {
-    id: 66,
+    id: 68,
     name: "키스미 롱앤컬 마스카라",
     price: 1000,
     character: "기타",
@@ -718,8 +735,8 @@ const products = [
     image: null,
   },
   {
-    id: 67,
-    name: "룸룸 공룡 인형",
+    id: 69,
+    name: "룸룸 공룡 스트레스볼 인형",
     price: 2500,
     character: "기타",
     category: "인형키링",
@@ -728,7 +745,7 @@ const products = [
     image: null,
   },
   {
-    id: 68,
+    id: 70,
     name: "치이카와 풍뎅이 인형키링",
     price: 2000,
     character: "치이카와",
@@ -738,7 +755,7 @@ const products = [
     image: null,
   },
   {
-    id: 69,
+    id: 71,
     name: "카카오프렌즈 춘식이 응원인형 키링",
     price: 2000,
     character: "기타",
@@ -748,7 +765,7 @@ const products = [
     image: null,
   },
   {
-    id: 70,
+    id: 72,
     name: "모나미 153 아이스크림 0.5mm 5본입 세트",
     price: 2000,
     character: "기타",
@@ -758,17 +775,18 @@ const products = [
     image: null,
   },
   {
-    id: 71,
+    id: 73,
     name: "어피치 미니 노트",
     price: 1000,
     character: "기타",
     category: "다꾸",
     seller: "시현",
     description: "",
+    imageCount: 3,
     image: null,
   },
   {
-    id: 72,
+    id: 74,
     name: "버블베어 스티키 메모지 2세트",
     price: 1000,
     character: "기타",
@@ -778,7 +796,7 @@ const products = [
     image: null,
   },
   {
-    id: 73,
+    id: 75,
     name: "모난베어 체크리스트 떡메모지",
     price: 3000,
     character: "기타",
@@ -788,38 +806,19 @@ const products = [
     image: null,
   },
   {
-    id: 74,
+    id: 76,
     name: "슬램덩크 메모패드",
     price: 2000,
     character: "기타",
     category: "다꾸",
     seller: "시현",
     description: "",
-    image: null,
-  },
-  {
-    id: 75,
-    name: "세계지도 스티키 메모지",
-    price: 1000,
-    character: "기타",
-    category: "다꾸",
-    seller: "시현",
-    description: "",
-    image: null,
-  },
-  {
-    id: 76,
-    name: "스티커 묶음",
-    price: 1000,
-    character: "기타",
-    category: "다꾸",
-    seller: "시현",
-    description: "",
+    imageCount: 2,
     image: null,
   },
   {
     id: 77,
-    name: "마스킹 테이프",
+    name: "세계지도 점착 메모지",
     price: 1000,
     character: "기타",
     category: "다꾸",
@@ -829,8 +828,8 @@ const products = [
   },
   {
     id: 78,
-    name: "냥냥빔 마스킹 테이프",
-    price: 2000,
+    name: "스티커 묶음 1",
+    price: 1000,
     character: "기타",
     category: "다꾸",
     seller: "시현",
@@ -839,7 +838,7 @@ const products = [
   },
   {
     id: 79,
-    name: "어버블 크러쉬 A6 다이어리 전용속지 5장",
+    name: "스티커 묶음 2",
     price: 1000,
     character: "기타",
     category: "다꾸",
@@ -849,6 +848,36 @@ const products = [
   },
   {
     id: 80,
+    name: "마스킹 테이프",
+    price: 1000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 81,
+    name: "냥냥빔 마스킹 테이프",
+    price: 2000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 82,
+    name: "어버블 크러쉬 A6 다이어리 전용속지 5장",
+    price: 1000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 83,
     name: "어린이용 망원경",
     price: 1500,
     character: "기타",
@@ -858,7 +887,7 @@ const products = [
     image: null,
   },
   {
-    id: 81,
+    id: 84,
     name: "아일릿 NOT CUTE ANYMORE 맥세이프 카드지갑",
     price: 2000,
     character: "기타",
@@ -868,7 +897,7 @@ const products = [
     image: null,
   },
   {
-    id: 82,
+    id: 85,
     name: "꾸벅 해리포터 피규어",
     price: 4000,
     character: "해리포터",
@@ -878,7 +907,7 @@ const products = [
     image: null,
   },
   {
-    id: 83,
+    id: 86,
     name: "케로로 피규어",
     price: 3000,
     character: "기타",
@@ -888,7 +917,7 @@ const products = [
     image: null,
   },
   {
-    id: 84,
+    id: 87,
     name: "히나쿠우 숭마모리 키링",
     price: 4000,
     character: "기타",
@@ -898,7 +927,7 @@ const products = [
     image: null,
   },
   {
-    id: 85,
+    id: 88,
     name: "체리 후우링 키링",
     price: 1500,
     character: "기타",
@@ -908,7 +937,7 @@ const products = [
     image: null,
   },
   {
-    id: 86,
+    id: 89,
     name: "팬케이크 키링",
     price: 1000,
     character: "기타",
@@ -918,7 +947,7 @@ const products = [
     image: null,
   },
   {
-    id: 87,
+    id: 90,
     name: "나메코 장군나메코 스트랩",
     price: 2000,
     character: "기타",
@@ -928,7 +957,7 @@ const products = [
     image: null,
   },
   {
-    id: 88,
+    id: 91,
     name: "만두고양이 핀버튼 뱃지",
     price: 1000,
     character: "기타",
@@ -937,6 +966,7 @@ const products = [
     description: "",
     image: null,
   },
+  // 여기에 상품을 추가하세요 ↓
 ];
 
 export default products;
