@@ -17,41 +17,43 @@ export default function ImageCarousel({ images, fallbackEmoji, bg }) {
     touchStartX.current = null
   }
 
-  // 로드 실패한 이미지 제외
   const validImages = images.filter((_, i) => !failed.has(i))
 
   // 이미지 없거나 전부 실패 → 이모지 플레이스홀더
   if (!images || images.length === 0 || validImages.length === 0) {
     return (
-      <div className={`w-full aspect-square ${bg} flex items-center justify-center`}>
-        <span className="text-5xl select-none">{fallbackEmoji}</span>
+      // padding-bottom 100% = 정사각형 (iOS Safari에서 aspect-ratio보다 안정적)
+      <div className={`relative w-full ${bg}`} style={{ paddingBottom: '100%' }}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-5xl select-none">{fallbackEmoji}</span>
+        </div>
       </div>
     )
   }
 
-  // 유효한 이미지 인덱스가 범위 벗어나지 않도록 보정
   const safeIndex = Math.min(current, validImages.length - 1)
 
   return (
+    // padding-bottom 100% 방식으로 정사각형 확보 → iOS Safari h-full 버그 우회
     <div
-      className="relative w-full aspect-square overflow-hidden bg-white"
-      style={{ touchAction: 'pan-y' }}
+      className="relative w-full overflow-hidden bg-white"
+      style={{ paddingBottom: '100%', touchAction: 'pan-y' }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* 슬라이드 트랙 */}
+      {/* 슬라이드 트랙: absolute로 padding 공간 채우기 */}
       <div
-        className="flex h-full transition-transform duration-300 ease-out"
+        className="absolute inset-0 flex transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${safeIndex * 100}%)` }}
       >
         {images.map((src, i) => (
-          // 실패한 이미지는 렌더링에서 제외
           !failed.has(i) && (
-            <div key={i} className="min-w-full h-full flex-shrink-0">
+            // 각 슬라이드를 relative로 → 이미지를 absolute inset-0으로 채움
+            <div key={i} className="relative min-w-full flex-shrink-0">
               <img
                 src={src}
                 alt=""
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 draggable={false}
                 onError={() => setFailed(prev => new Set([...prev, i]))}
               />
