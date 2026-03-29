@@ -50,7 +50,7 @@ const products = [
   {
     id: 1,
     name: "산리오 헬로키티 초코에그 세트3 (비행기·갸루·샐러리맨)",
-    price: 2000,
+    price: 3000,
     character: "산리오",
     category: "가챠",
     seller: "서현",
@@ -60,7 +60,7 @@ const products = [
   {
     id: 2,
     name: "산리오 헬로키티 초코에그 세트1 (라쿤·사다코·로봇)",
-    price: 2000,
+    price: 3000,
     character: "산리오",
     category: "가챠",
     seller: "서현",
@@ -70,7 +70,7 @@ const products = [
   {
     id: 3,
     name: "산리오 헬로키티 초코에그 세트2 (초밥·중화만두)",
-    price: 2000,
+    price: 3000,
     character: "산리오",
     category: "가챠",
     seller: "서현",
@@ -80,7 +80,7 @@ const products = [
   {
     id: 4,
     name: "산리오 헬로키티 초코에그 세트4 (아쿠비짱·피치존)",
-    price: 2000,
+    price: 3000,
     character: "산리오",
     category: "가챠",
     seller: "서현",

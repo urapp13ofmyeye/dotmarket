@@ -34,6 +34,9 @@ export default function FilterBar({
   catFilter,
   setCharFilter,
   setCatFilter,
+  isAdmin,
+  showSoldOut,
+  setShowSoldOut,
 }) {
   return (
     <div className="border-b border-pink-100">
@@ -41,21 +44,33 @@ export default function FilterBar({
       <div className="scroll-x border-t border-pink-50">
         <div className="flex gap-2 px-4 py-2.5 min-w-max">
           <button
-            onClick={() => setCatFilter(null)}
+            onClick={() => { setCatFilter(null); setShowSoldOut && setShowSoldOut(false) }}
             className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
-              !catFilter
+              !catFilter && !showSoldOut
                 ? "bg-purple-300 text-white"
                 : "bg-gray-100 text-gray-400"
             }`}
           >
             품목 | ALL
           </button>
+          {isAdmin && (
+            <button
+              onClick={() => { setShowSoldOut(v => !v); setCatFilter(null); setCharFilter(null) }}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
+                showSoldOut
+                  ? "bg-red-400 text-white"
+                  : "bg-red-50 text-red-400 border border-red-200"
+              }`}
+            >
+              품절목록
+            </button>
+          )}
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setCatFilter(catFilter === cat ? null : cat)}
+              onClick={() => { setCatFilter(catFilter === cat ? null : cat); setShowSoldOut && setShowSoldOut(false) }}
               className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
-                catFilter === cat
+                catFilter === cat && !showSoldOut
                   ? "bg-purple-300 text-white"
                   : "bg-purple-50 text-purple-400 border border-purple-200"
               }`}
@@ -69,9 +84,9 @@ export default function FilterBar({
       <div className="scroll-x">
         <div className="flex gap-2 px-4 py-2.5 min-w-max">
           <button
-            onClick={() => setCharFilter(null)}
+            onClick={() => { setCharFilter(null); setShowSoldOut && setShowSoldOut(false) }}
             className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
-              !charFilter
+              !charFilter && !showSoldOut
                 ? "bg-pink-400 text-white"
                 : "bg-gray-100 text-gray-400"
             }`}
@@ -80,11 +95,11 @@ export default function FilterBar({
           </button>
           {characters.map((char) => {
             const s = CHAR_STYLE[char] || CHAR_STYLE["기타"];
-            const active = charFilter === char;
+            const active = charFilter === char && !showSoldOut;
             return (
               <button
                 key={char}
-                onClick={() => setCharFilter(active ? null : char)}
+                onClick={() => { setCharFilter(active ? null : char); setShowSoldOut && setShowSoldOut(false) }}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${active ? s.on : s.off}`}
               >
                 {char}

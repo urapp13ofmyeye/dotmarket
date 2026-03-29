@@ -6,6 +6,7 @@ import FilterBar from '@/components/FilterBar'
 import ProductCard from '@/components/ProductCard'
 import AdminModal from '@/components/AdminModal'
 import CartDrawer from '@/components/CartDrawer'
+import SoldOutDrawer from '@/components/SoldOutDrawer'
 
 export default function Home() {
   const [charFilter, setCharFilter] = useState(null)
@@ -19,17 +20,33 @@ export default function Home() {
   const [cartItems, setCartItems] = useState({})
   const [showCart, setShowCart] = useState(false)
 
-  // 품절 상태 불러오기
+  // 품절 모드
+  const [quickMode, setQuickMode] = useState(false)
+  const [pendingSoldOut, setPendingSoldOut] = useState(new Set())
+  const [confirmingQuick, setConfirmingQuick] = useState(false)
+  const [showSoldOut, setShowSoldOut] = useState(false)
+
+  // 품절 상태 불러오기 (Redis)
   useEffect(() => {
-    const saved = localStorage.getItem('dot_soldout')
-    if (saved) setSoldOutIds(new Set(JSON.parse(saved)))
+    fetch('/api/soldout')
+      .then(r => r.json())
+      .then(ids => setSoldOutIds(new Set(ids)))
+      .catch(() => {})
   }, [])
 
-  // 장바구니 불러오기
+  // 관리자 모드 진입/퇴장 시 품절처리 모드 자동 연동
   useEffect(() => {
-    const saved = localStorage.getItem('dot_cart')
-    if (saved) setCartItems(JSON.parse(saved))
-  }, [])
+    if (isAdmin) {
+      setPendingSoldOut(new Set(soldOutIds))
+      setQuickMode(true)
+    } else {
+      setQuickMode(false)
+      setPendingSoldOut(new Set())
+      setShowSoldOut(false)
+      setCharFilter(null)
+      setCatFilter(null)
+    }
+  }, [isAdmin])
 
   // 가격 오버라이드 불러오기
   useEffect(() => {
@@ -39,13 +56,76 @@ export default function Home() {
       .catch(() => {})
   }, [])
 
-  const toggleSoldOut = (id) => {
-    setSoldOutIds(prev => {
+  // 장바구니 불러오기
+  useEffect(() => {
+    const saved = localStorage.getItem('dot_cart')
+    if (saved) setCartItems(JSON.parse(saved))
+  }, [])
+
+  // 단일 품절 토글 (관리자 카드 버튼)
+  const toggleSoldOut = async (id) => {
+    const next = new Set(soldOutIds)
+    next.has(id) ? next.delete(id) : next.add(id)
+    setSoldOutIds(next)
+    await fetch('/api/soldout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPassword, ids: [...next] }),
+    })
+  }
+
+  // 빠른 품절 모드 진입
+  const enterQuickMode = () => {
+    setPendingSoldOut(new Set(soldOutIds))
+    setQuickMode(true)
+  }
+
+  // 품절 선택 초기화 (확정된 상태로 되돌리기)
+  const cancelQuickMode = () => {
+    setPendingSoldOut(new Set(soldOutIds))
+  }
+
+  // 빠른 품절 모드 - 카드 탭
+  const toggleQuickSelect = (id) => {
+    setPendingSoldOut(prev => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)
-      localStorage.setItem('dot_soldout', JSON.stringify([...next]))
       return next
     })
+  }
+
+  // 이번 거래에서 새로 선택한 항목 (pendingSoldOut - soldOutIds)
+  const sessionItems = useMemo(() => {
+    const items = new Set()
+    for (const id of pendingSoldOut) {
+      if (!soldOutIds.has(id)) items.add(id)
+    }
+    return items
+  }, [pendingSoldOut, soldOutIds])
+
+  // 품절 해제 예정 항목 (soldOutIds - pendingSoldOut)
+  const removedItems = useMemo(() => {
+    const items = new Set()
+    for (const id of soldOutIds) {
+      if (!pendingSoldOut.has(id)) items.add(id)
+    }
+    return items
+  }, [pendingSoldOut, soldOutIds])
+
+  // 빠른 품절 모드 - 확정 후 세션 초기화
+  const confirmQuickSoldOut = async () => {
+    setConfirmingQuick(true)
+    const res = await fetch('/api/soldout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPassword, ids: [...pendingSoldOut] }),
+    })
+    if (res.ok) {
+      const next = new Set(pendingSoldOut)
+      setSoldOutIds(next)
+      setPendingSoldOut(new Set(next)) // 세션 초기화 → 다음 거래 깨끗하게 시작
+    }
+    setConfirmingQuick(false)
   }
 
   const updatePrice = async (id, newPrice) => {
@@ -95,11 +175,12 @@ export default function Home() {
       return products.filter(p => p.name.toLowerCase().includes(q))
     }
     return products.filter(p => {
+      if (showSoldOut) return soldOutIds.has(p.id)
       if (charFilter && p.character !== charFilter) return false
       if (catFilter && p.category !== catFilter) return false
       return true
     })
-  }, [charFilter, catFilter, searchQuery])
+  }, [charFilter, catFilter, searchQuery, showSoldOut, soldOutIds])
 
   const characters = ['산리오', '치이카와', '해리포터', '죠죠', '뱅드림', '기타']
   const categories = ['가챠', '피규어', '키링', '인형키링', '뱃지', '잡화', '다꾸']
@@ -132,7 +213,9 @@ export default function Home() {
               </button>
             )}
             <button
-              onClick={() => isAdmin ? setIsAdmin(false) : setShowAdminModal(true)}
+              onClick={() => {
+                isAdmin ? setIsAdmin(false) : setShowAdminModal(true)
+              }}
               className={`text-xs px-3 py-1.5 rounded-full border transition ${
                 isAdmin
                   ? 'bg-pink-400 text-white border-pink-400'
@@ -173,6 +256,9 @@ export default function Home() {
             catFilter={catFilter}
             setCharFilter={setCharFilter}
             setCatFilter={setCatFilter}
+            isAdmin={isAdmin}
+            showSoldOut={showSoldOut}
+            setShowSoldOut={setShowSoldOut}
           />
         </div>
       </div>
@@ -215,11 +301,27 @@ export default function Home() {
                 onUpdatePrice={updatePrice}
                 cartQty={cartItems[product.id] || 0}
                 onToggleCart={() => toggleCart(product.id)}
+                quickMode={quickMode}
+                isQuickSelected={sessionItems.has(product.id)}
+                isQuickRemoved={removedItems.has(product.id)}
+                onQuickToggle={() => toggleQuickSelect(product.id)}
               />
             ))}
           </div>
         )}
       </main>
+
+      {isAdmin && (
+        <SoldOutDrawer
+          sessionItems={sessionItems}
+          removedItems={removedItems}
+          priceOverrides={priceOverrides}
+          onToggleItem={toggleQuickSelect}
+          onConfirm={confirmQuickSoldOut}
+          onCancel={cancelQuickMode}
+          confirming={confirmingQuick}
+        />
+      )}
 
       {showAdminModal && (
         <AdminModal

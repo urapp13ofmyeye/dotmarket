@@ -31,6 +31,10 @@ export default function ProductCard({
   onUpdatePrice,
   cartQty,
   onToggleCart,
+  quickMode,
+  isQuickSelected,
+  isQuickRemoved,
+  onQuickToggle,
 }) {
   const { id, name, price, character, category, seller, imageCount } = product;
   const emoji = CHAR_EMOJI[character] || "⭐";
@@ -64,8 +68,15 @@ export default function ProductCard({
 
   return (
     <div
+      onClick={quickMode ? onQuickToggle : undefined}
       className={`relative rounded-2xl bg-white overflow-hidden flex flex-col transition-all duration-200 ${
-        isSoldOut
+        quickMode
+          ? isQuickSelected
+            ? "border-2 border-red-400 shadow-md shadow-red-100 cursor-pointer"
+            : isQuickRemoved
+            ? "border-2 border-blue-400 shadow-md shadow-blue-100 cursor-pointer"
+            : "border border-pink-100 shadow-sm cursor-pointer"
+          : isSoldOut
           ? "opacity-60 border border-pink-100 shadow-sm"
           : inCart
           ? "border-2 border-pink-400 shadow-md shadow-pink-100"
@@ -75,10 +86,26 @@ export default function ProductCard({
       {/* 이미지 캐러셀 */}
       <div className="relative">
         <ImageCarousel images={images} fallbackEmoji={emoji} bg={bg} />
-        {isSoldOut && (
+        {isSoldOut && !isQuickSelected && !isQuickRemoved && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center pointer-events-none">
             <span className="bg-gray-500 text-white text-xs font-bold px-3 py-1 rounded-full -rotate-12 shadow">
               품절
+            </span>
+          </div>
+        )}
+        {/* 새로 품절 선택 */}
+        {quickMode && isQuickSelected && (
+          <div className="absolute inset-0 bg-red-400/20 flex items-center justify-center pointer-events-none">
+            <span className="bg-red-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+              ✓ 품절
+            </span>
+          </div>
+        )}
+        {/* 품절 해제 예정 */}
+        {quickMode && isQuickRemoved && (
+          <div className="absolute inset-0 bg-blue-400/20 flex items-center justify-center pointer-events-none">
+            <span className="bg-blue-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+              ↩ 해제
             </span>
           </div>
         )}
@@ -131,7 +158,7 @@ export default function ProductCard({
             )}
             {isAdmin && (
               <button
-                onClick={startEdit}
+                onClick={(e) => { e.stopPropagation(); startEdit(); }}
                 className="ml-auto text-[10px] text-gray-300 hover:text-gray-400 transition"
               >
                 ✏️
@@ -140,24 +167,8 @@ export default function ProductCard({
           </div>
         )}
 
-        {isAdmin && seller && (
-          <p className="text-[10px] text-gray-300 mt-0.5">판매자: {seller}</p>
-        )}
       </div>
 
-      {/* 관리자 품절 토글 */}
-      {isAdmin && (
-        <button
-          onClick={onToggleSoldOut}
-          className={`w-full text-xs py-2 font-medium border-t transition ${
-            isSoldOut
-              ? "bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-400 border-gray-100"
-              : "bg-pink-50 text-pink-400 hover:bg-pink-100 border-pink-100"
-          }`}
-        >
-          {isSoldOut ? "↩ 품절 취소" : "품절 처리"}
-        </button>
-      )}
     </div>
   );
 }
