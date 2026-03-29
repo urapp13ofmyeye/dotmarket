@@ -76,14 +76,14 @@ export default function SoldOutDrawer({
       <div
         className="fixed bottom-0 left-0 right-0 z-40 transition-transform duration-300 ease-out"
         style={{ transform: visible ? "translateY(0)" : "translateY(100%)" }}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
       >
         <div className="bg-white border-t-2 border-red-100 shadow-2xl rounded-t-2xl max-w-4xl mx-auto">
           {/* 핸들 + 요약 바 (항상 표시) */}
           <button
             className="w-full px-5 pt-3 pb-3 flex items-center justify-between"
             onClick={() => setExpanded((v) => !v)}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
           >
             <div className="flex items-center gap-2">
               <div className="w-8 h-1 bg-gray-200 rounded-full mr-1" />

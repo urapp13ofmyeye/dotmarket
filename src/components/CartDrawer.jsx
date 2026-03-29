@@ -57,11 +57,13 @@ export default function CartDrawer({ cartItems, priceOverrides, onUpdateQty, onC
       <div
         className="relative bg-white rounded-t-3xl shadow-2xl max-h-[80vh] flex flex-col transition-transform duration-300 ease-out"
         style={{ transform: visible ? 'translateY(0)' : 'translateY(100%)' }}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
       >
         {/* 스와이프 핸들 */}
-        <div className="flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing">
+        <div
+          className="flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
           <div className="w-10 h-1 bg-gray-200 rounded-full" />
         </div>
 

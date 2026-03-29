@@ -9,6 +9,7 @@ export default function SettlementPage() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [soldOutIds, setSoldOutIds] = useState([]);
   const [priceOverrides, setPriceOverrides] = useState({});
   const [openSellers, setOpenSellers] = useState({});
@@ -42,7 +43,11 @@ export default function SettlementPage() {
 
   useEffect(() => {
     const saved = sessionStorage.getItem("dot_admin_pw");
-    if (saved) fetchAndAuth(saved);
+    if (saved) {
+      fetchAndAuth(saved).finally(() => setChecking(false));
+    } else {
+      setChecking(false);
+    }
   }, []);
 
   const handleLogin = async (e) => {
@@ -79,6 +84,14 @@ export default function SettlementPage() {
 
   const grandTotal = sellerList.reduce((sum, s) => sum + s.subtotal, 0);
   const grandCount = sellerList.reduce((sum, s) => sum + s.count, 0);
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-[#FFF5F8] flex items-center justify-center">
+        <p className="text-sm text-gray-300">불러오는 중...</p>
+      </div>
+    );
+  }
 
   if (!authed) {
     return (

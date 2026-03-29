@@ -43,7 +43,7 @@ export default function ProductCard({
 
   const displayPrice = priceOverride ?? price;
   const [editing, setEditing] = useState(false);
-  const [editValue, setEditValue] = useState('');
+  const [editValue, setEditValue] = useState("");
   const [saving, setSaving] = useState(false);
 
   const startEdit = () => {
@@ -74,19 +74,19 @@ export default function ProductCard({
           ? isQuickSelected
             ? "border-2 border-red-400 shadow-md shadow-red-100 cursor-pointer"
             : isQuickRemoved
-            ? "border-2 border-blue-400 shadow-md shadow-blue-100 cursor-pointer"
-            : "border border-pink-100 shadow-sm cursor-pointer"
+              ? "border-2 border-blue-400 shadow-md shadow-blue-100 cursor-pointer"
+              : "border border-pink-100 shadow-sm cursor-pointer"
           : isSoldOut
-          ? "opacity-60 border border-pink-100 shadow-sm"
-          : inCart
-          ? "border-2 border-pink-400 shadow-md shadow-pink-100"
-          : "border border-pink-100 shadow-sm hover:shadow-md"
+            ? "opacity-60 border border-pink-100 shadow-sm"
+            : inCart
+              ? "border-2 border-pink-400 shadow-md shadow-pink-100"
+              : "border border-pink-100 shadow-sm hover:shadow-md"
       }`}
     >
       {/* 이미지 캐러셀 */}
       <div className="relative">
         <ImageCarousel images={images} fallbackEmoji={emoji} bg={bg} />
-        {isSoldOut && !isQuickSelected && !isQuickRemoved && (
+        {isSoldOut && !isQuickSelected && !(quickMode && isQuickRemoved) && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center pointer-events-none">
             <span className="bg-gray-500 text-white text-xs font-bold px-3 py-1 rounded-full -rotate-12 shadow">
               품절
@@ -114,13 +114,14 @@ export default function ProductCard({
           <button
             onClick={onToggleCart}
             className={`absolute top-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
-              inCart
-                ? 'bg-pink-400 shadow-md'
-                : 'bg-white/80 shadow-sm'
+              inCart ? "bg-pink-400 shadow-md" : "bg-white/80 shadow-sm"
             }`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-              className={`w-4 h-4 transition-colors duration-200 -scale-x-100 ${inCart ? 'text-white' : 'text-gray-300'}`}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className={`w-4 h-4 transition-colors duration-200 -scale-x-100 ${inCart ? "text-white" : "text-gray-300"}`}
             >
               <path d="M2.25 2.25a.75.75 0 0 0 0 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 0 0-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 0 0 0-1.5H5.378A2.25 2.25 0 0 1 7.5 15h11.218a.75.75 0 0 0 .674-.421 60.358 60.358 0 0 0 2.96-7.228.75.75 0 0 0-.525-.965A60.864 60.864 0 0 0 5.68 4.509l-.232-.867A1.875 1.875 0 0 0 3.636 2.25H2.25ZM16.5 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM7.5 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
             </svg>
@@ -131,7 +132,9 @@ export default function ProductCard({
       {/* 상품 정보 */}
       <div className="p-2.5 flex flex-col gap-0.5 flex-1">
         <span className="text-[10px] text-gray-400">{category}</span>
-        <p className="text-sm font-medium text-gray-700 leading-snug line-clamp-2">{name}</p>
+        <p className="text-sm font-medium text-gray-700 leading-snug line-clamp-2">
+          {name}
+        </p>
 
         {/* 가격 - 관리자 모드에서 탭하면 수정 가능 */}
         {isAdmin && editing ? (
@@ -139,9 +142,9 @@ export default function ProductCard({
             <input
               type="number"
               value={editValue}
-              onChange={e => setEditValue(e.target.value)}
+              onChange={(e) => setEditValue(e.target.value)}
               onBlur={savePrice}
-              onKeyDown={e => e.key === 'Enter' && savePrice()}
+              onKeyDown={(e) => e.key === "Enter" && savePrice()}
               className="w-full text-sm font-bold text-pink-400 border-b border-pink-300 outline-none bg-transparent"
               autoFocus
               disabled={saving}
@@ -150,15 +153,22 @@ export default function ProductCard({
           </div>
         ) : (
           <div className="flex items-center gap-1 mt-auto pt-1">
-            <p className={`text-sm font-bold ${priceOverride ? 'text-orange-400' : 'text-pink-400'}`}>
+            <p
+              className={`text-sm font-bold ${priceOverride ? "text-orange-400" : "text-pink-400"}`}
+            >
               {displayPrice.toLocaleString()}원
             </p>
             {priceOverride && (
-              <span className="text-[9px] text-gray-300 line-through">{price.toLocaleString()}</span>
+              <span className="text-[9px] text-gray-300 line-through">
+                {price.toLocaleString()}
+              </span>
             )}
             {isAdmin && (
               <button
-                onClick={(e) => { e.stopPropagation(); startEdit(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  startEdit();
+                }}
                 className="ml-auto text-[10px] text-gray-300 hover:text-gray-400 transition"
               >
                 ✏️
@@ -166,9 +176,7 @@ export default function ProductCard({
             )}
           </div>
         )}
-
       </div>
-
     </div>
   );
 }
