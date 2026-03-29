@@ -109,7 +109,7 @@ const products = [
   },
   {
     id: 7,
-    name: "산리오 헬로키티 LED 가챠",
+    name: "산리오 헬로키티 LED 라이트 가챠",
     price: 1500,
     character: "산리오",
     category: "가챠",
@@ -129,7 +129,7 @@ const products = [
   },
   {
     id: 9,
-    name: "치이카와 쿠리만쥬 가챠",
+    name: "치이카와 쿠리만쥬 인테리어 피규어",
     price: 1000,
     character: "치이카와",
     category: "가챠",
@@ -139,7 +139,7 @@ const products = [
   },
   {
     id: 10,
-    name: "치이카와 모몽가 스탑워치",
+    name: "치이카와 모몽가 스탑워치 가챠",
     price: 2000,
     character: "치이카와",
     category: "가챠",
@@ -605,7 +605,7 @@ const products = [
   },
   {
     id: 56,
-    name: "죠죠 4부 뵤옹 곶 피규어 스탬프 쿠지 C상",
+    name: "죠죠 4부 뵤옹 곶 피규어 스탬프 쿠지 F상",
     price: 2000,
     character: "죠죠",
     category: "피규어",
@@ -636,10 +636,10 @@ const products = [
   },
   {
     id: 59,
-    name: "치이카와 하치와레 페이스 체인지 피규어",
+    name: "치이카와 하치와레 페이스 체인지 가챠",
     price: 2000,
     character: "치이카와",
-    category: "피규어",
+    category: "가챠",
     seller: "서현",
     description: "",
     image: null,
@@ -656,8 +656,8 @@ const products = [
   },
   {
     id: 61,
-    name: "치이카와 3형제 가챠 세트",
-    price: 3000,
+    name: "치이카와 인테리어 피규어 세트",
+    price: 2500,
     character: "치이카와",
     category: "가챠",
     seller: "서현",
@@ -676,7 +676,7 @@ const products = [
   },
   {
     id: 63,
-    name: "리락쿠마 키이로이토리 라이트 가챠",
+    name: "리락쿠마 키이로이토리 LED 라이트 가챠",
     price: 2000,
     character: "산리오",
     category: "가챠",
@@ -696,7 +696,7 @@ const products = [
   },
   {
     id: 65,
-    name: "뿌이뿌이모루카 포테토 가챠",
+    name: "뿌이뿌이모루카 포테토 플러피 가챠",
     price: 3000,
     character: "기타",
     category: "가챠",
@@ -788,7 +788,7 @@ const products = [
   },
   {
     id: 74,
-    name: "어피치 미니 노트",
+    name: "어피치 미니 줄노트",
     price: 1000,
     character: "기타",
     category: "다꾸",
@@ -819,7 +819,7 @@ const products = [
   },
   {
     id: 77,
-    name: "슬램덩크 메모패드",
+    name: "슬램덩크 정대만 14번 메모패드",
     price: 2000,
     character: "기타",
     category: "다꾸",
@@ -866,6 +866,7 @@ const products = [
     category: "다꾸",
     seller: "시현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
