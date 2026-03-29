@@ -48,7 +48,7 @@ export default function FilterBar({
                 : "bg-gray-100 text-gray-400"
             }`}
           >
-            ALL
+            품목 | ALL
           </button>
           {categories.map((cat) => (
             <button
@@ -76,7 +76,7 @@ export default function FilterBar({
                 : "bg-gray-100 text-gray-400"
             }`}
           >
-            ALL
+            캐릭터 | ALL
           </button>
           {characters.map((char) => {
             const s = CHAR_STYLE[char] || CHAR_STYLE["기타"];
