@@ -52,7 +52,8 @@ export default function ProductCard({
       return;
     }
     setSaving(true);
-    await onUpdatePrice(id, newPrice);
+    // 원래 가격으로 복원 시 override 삭제
+    await onUpdatePrice(id, newPrice === price ? null : newPrice);
     setSaving(false);
     setEditing(false);
   };

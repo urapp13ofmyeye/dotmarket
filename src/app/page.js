@@ -40,13 +40,19 @@ export default function Home() {
   }
 
   const updatePrice = async (id, newPrice) => {
+    const isReset = newPrice === null
     const res = await fetch('/api/prices', {
-      method: 'POST',
+      method: isReset ? 'DELETE' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: adminPassword, id, price: newPrice }),
+      body: JSON.stringify(isReset ? { password: adminPassword, id } : { password: adminPassword, id, price: newPrice }),
     })
     if (res.ok) {
-      setPriceOverrides(prev => ({ ...prev, [id]: newPrice }))
+      setPriceOverrides(prev => {
+        const next = { ...prev }
+        if (isReset) delete next[id]
+        else next[id] = newPrice
+        return next
+      })
     }
   }
 
