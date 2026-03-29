@@ -5,6 +5,7 @@ import products from '@/data/products'
 import FilterBar from '@/components/FilterBar'
 import ProductCard from '@/components/ProductCard'
 import AdminModal from '@/components/AdminModal'
+import CartDrawer from '@/components/CartDrawer'
 
 export default function Home() {
   const [charFilter, setCharFilter] = useState(null)
@@ -15,11 +16,19 @@ export default function Home() {
   const [showAdminModal, setShowAdminModal] = useState(false)
   const [soldOutIds, setSoldOutIds] = useState(new Set())
   const [priceOverrides, setPriceOverrides] = useState({})
+  const [cartItems, setCartItems] = useState({})
+  const [showCart, setShowCart] = useState(false)
 
   // 품절 상태 불러오기
   useEffect(() => {
     const saved = localStorage.getItem('dot_soldout')
     if (saved) setSoldOutIds(new Set(JSON.parse(saved)))
+  }, [])
+
+  // 장바구니 불러오기
+  useEffect(() => {
+    const saved = localStorage.getItem('dot_cart')
+    if (saved) setCartItems(JSON.parse(saved))
   }, [])
 
   // 가격 오버라이드 불러오기
@@ -56,6 +65,22 @@ export default function Home() {
     }
   }
 
+  const updateCart = (id, qty) => {
+    setCartItems(prev => {
+      const next = { ...prev }
+      if (qty <= 0) delete next[id]
+      else next[id] = qty
+      localStorage.setItem('dot_cart', JSON.stringify(next))
+      return next
+    })
+  }
+
+  const toggleCart = (id) => {
+    updateCart(id, cartItems[id] ? 0 : 1)
+  }
+
+  const cartCount = Object.values(cartItems).reduce((sum, q) => sum + q, 0)
+
   const handleSearch = (value) => {
     setSearchQuery(value)
     if (value.trim()) {
@@ -91,16 +116,32 @@ export default function Home() {
             <h1 className="text-lg font-bold text-pink-400 leading-tight">🌸 DOT 마켓</h1>
             <p className="text-[11px] text-gray-400">일일 벼룩시장 · 돗자리마켓</p>
           </div>
-          <button
-            onClick={() => isAdmin ? setIsAdmin(false) : setShowAdminModal(true)}
-            className={`text-xs px-3 py-1.5 rounded-full border transition ${
-              isAdmin
-                ? 'bg-pink-400 text-white border-pink-400'
-                : 'text-gray-300 border-gray-200 hover:border-gray-300 hover:text-gray-400'
-            }`}
-          >
-            {isAdmin ? '관리자 모드 ON' : '관리자'}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* 장바구니 버튼 */}
+            {!isAdmin && (
+              <button
+                onClick={() => setShowCart(true)}
+                className="relative text-gray-400 hover:text-pink-400 transition p-1"
+              >
+                <span className="text-xl">🛒</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-pink-400 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">
+                    {cartCount > 99 ? '99+' : cartCount}
+                  </span>
+                )}
+              </button>
+            )}
+            <button
+              onClick={() => isAdmin ? setIsAdmin(false) : setShowAdminModal(true)}
+              className={`text-xs px-3 py-1.5 rounded-full border transition ${
+                isAdmin
+                  ? 'bg-pink-400 text-white border-pink-400'
+                  : 'text-gray-300 border-gray-200 hover:border-gray-300 hover:text-gray-400'
+              }`}
+            >
+              {isAdmin ? '관리자 모드 ON' : '관리자'}
+            </button>
+          </div>
         </header>
 
         <div className="max-w-4xl mx-auto px-4 pb-2.5">
@@ -172,6 +213,8 @@ export default function Home() {
                 onToggleSoldOut={() => toggleSoldOut(product.id)}
                 priceOverride={priceOverrides[product.id] ? Number(priceOverrides[product.id]) : null}
                 onUpdatePrice={updatePrice}
+                cartQty={cartItems[product.id] || 0}
+                onToggleCart={() => toggleCart(product.id)}
               />
             ))}
           </div>
@@ -182,6 +225,15 @@ export default function Home() {
         <AdminModal
           onSuccess={(pw) => { setIsAdmin(true); setAdminPassword(pw); setShowAdminModal(false) }}
           onClose={() => setShowAdminModal(false)}
+        />
+      )}
+
+      {showCart && (
+        <CartDrawer
+          cartItems={cartItems}
+          priceOverrides={priceOverrides}
+          onUpdateQty={updateCart}
+          onClose={() => setShowCart(false)}
         />
       )}
     </div>

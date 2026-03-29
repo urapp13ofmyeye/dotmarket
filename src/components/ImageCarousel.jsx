@@ -78,7 +78,7 @@ export default function ImageCarousel({ images, fallbackEmoji, bg }) {
 
       {/* n/전체 뱃지 (2장 이상일 때만) */}
       {validImages.length > 1 && (
-        <span className="absolute top-2 right-2 bg-black/30 text-white text-[10px] px-1.5 py-0.5 rounded-full pointer-events-none">
+        <span className="absolute top-2 left-2 bg-black/30 text-white text-[10px] px-1.5 py-0.5 rounded-full pointer-events-none">
           {safeIndex + 1} / {validImages.length}
         </span>
       )}
