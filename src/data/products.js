@@ -199,6 +199,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -209,6 +210,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -219,6 +221,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -229,6 +232,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -239,6 +243,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -249,6 +254,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -263,7 +269,7 @@ const products = [
   },
   {
     id: 22,
-    name: "라라랜드 듀얼 뱃지",
+    name: "라라랜드 듀얼 뱃지 2개입",
     price: 3000,
     character: "기타",
     category: "뱃지",
@@ -556,7 +562,7 @@ const products = [
   },
   {
     id: 51,
-    name: "치이카와 페어리 인형 키링",
+    name: "치이카와 페어리 마스코트 인형 키링",
     price: 2000,
     character: "치이카와",
     category: "인형키링",
@@ -861,8 +867,8 @@ const products = [
   },
   {
     id: 81,
-    name: "마스킹 테이프",
-    price: 1000,
+    name: "냥냥빔 키스컷 마스킹 테이프 1",
+    price: 2000,
     character: "기타",
     category: "다꾸",
     seller: "시현",
@@ -872,17 +878,29 @@ const products = [
   },
   {
     id: 82,
-    name: "냥냥빔 마스킹 테이프",
+    name: "냥냥빔 키스컷 마스킹 테이프 2",
     price: 2000,
     character: "기타",
     category: "다꾸",
     seller: "시현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
     id: 83,
-    name: "어버블 크러쉬 A6전용속지 5장 (3종류)",
+    name: "우표 마스킹 테이프",
+    price: 1000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    imageCount: 2,
+    image: null,
+  },
+  {
+    id: 84,
+    name: "어버블 크러쉬 A6전용속지 마음대로 5장 (3종류)",
     price: 1000,
     character: "기타",
     category: "다꾸",
@@ -892,7 +910,7 @@ const products = [
     image: null,
   },
   {
-    id: 84,
+    id: 85,
     name: "어린이용 망원경",
     price: 1500,
     character: "기타",
@@ -902,7 +920,7 @@ const products = [
     image: null,
   },
   {
-    id: 85,
+    id: 86,
     name: "아일릿 NOT CUTE ANYMORE 맥세이프 카드지갑",
     price: 2000,
     character: "기타",
@@ -912,7 +930,7 @@ const products = [
     image: null,
   },
   {
-    id: 86,
+    id: 87,
     name: "꾸벅 해리포터 피규어",
     price: 4000,
     character: "해리포터",
@@ -922,7 +940,7 @@ const products = [
     image: null,
   },
   {
-    id: 87,
+    id: 88,
     name: "케로로 피규어",
     price: 3000,
     character: "기타",
@@ -932,7 +950,7 @@ const products = [
     image: null,
   },
   {
-    id: 88,
+    id: 89,
     name: "히나쿠우 숭마모리 키링",
     price: 4000,
     character: "기타",
@@ -942,7 +960,7 @@ const products = [
     image: null,
   },
   {
-    id: 89,
+    id: 90,
     name: "체리 후우링 키링",
     price: 1500,
     character: "기타",
@@ -952,7 +970,7 @@ const products = [
     image: null,
   },
   {
-    id: 90,
+    id: 91,
     name: "팬케이크 키링",
     price: 1000,
     character: "기타",
@@ -962,7 +980,7 @@ const products = [
     image: null,
   },
   {
-    id: 91,
+    id: 92,
     name: "나메코 장군나메코 스트랩",
     price: 2000,
     character: "기타",
@@ -972,7 +990,7 @@ const products = [
     image: null,
   },
   {
-    id: 92,
+    id: 93,
     name: "만두고양이 핀버튼 뱃지",
     price: 1000,
     character: "기타",
