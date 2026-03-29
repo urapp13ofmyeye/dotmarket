@@ -27,6 +27,15 @@ export default function Home() {
   const [confirmingQuick, setConfirmingQuick] = useState(false)
   const [showSoldOut, setShowSoldOut] = useState(false)
 
+  // 관리자 세션 복원
+  useEffect(() => {
+    const saved = sessionStorage.getItem('dot_admin_pw')
+    if (saved) {
+      setAdminPassword(saved)
+      setIsAdmin(true)
+    }
+  }, [])
+
   // 품절 상태 불러오기 (Redis)
   useEffect(() => {
     fetch('/api/soldout')
