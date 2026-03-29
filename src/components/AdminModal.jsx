@@ -5,14 +5,28 @@ import { useState } from 'react'
 export default function AdminModal({ onSuccess, onClose }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      onSuccess()
-    } else {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+      if (res.ok) {
+        onSuccess()
+      } else {
+        setError(true)
+        setPassword('')
+      }
+    } catch {
       setError(true)
       setPassword('')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -40,15 +54,17 @@ export default function AdminModal({ onSuccess, onClose }) {
                 : 'border-pink-200 focus:ring-pink-100'
             }`}
             autoFocus
+            disabled={loading}
           />
           {error && (
             <p className="text-xs text-red-400 text-center -mt-1">비밀번호가 틀렸어요</p>
           )}
           <button
             type="submit"
-            className="bg-pink-400 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-pink-500 transition"
+            disabled={loading}
+            className="bg-pink-400 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-pink-500 transition disabled:opacity-60"
           >
-            확인
+            {loading ? '확인 중...' : '확인'}
           </button>
           <button
             type="button"
