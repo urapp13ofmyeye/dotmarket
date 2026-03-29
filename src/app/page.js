@@ -11,12 +11,23 @@ export default function Home() {
   const [catFilter, setCatFilter] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
+  const [adminPassword, setAdminPassword] = useState('')
   const [showAdminModal, setShowAdminModal] = useState(false)
   const [soldOutIds, setSoldOutIds] = useState(new Set())
+  const [priceOverrides, setPriceOverrides] = useState({})
 
+  // 품절 상태 불러오기
   useEffect(() => {
     const saved = localStorage.getItem('dot_soldout')
     if (saved) setSoldOutIds(new Set(JSON.parse(saved)))
+  }, [])
+
+  // 가격 오버라이드 불러오기
+  useEffect(() => {
+    fetch('/api/prices')
+      .then(r => r.json())
+      .then(data => setPriceOverrides(data))
+      .catch(() => {})
   }, [])
 
   const toggleSoldOut = (id) => {
@@ -28,7 +39,17 @@ export default function Home() {
     })
   }
 
-  // 검색어 입력 시 필터 초기화
+  const updatePrice = async (id, newPrice) => {
+    const res = await fetch('/api/prices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPassword, id, price: newPrice }),
+    })
+    if (res.ok) {
+      setPriceOverrides(prev => ({ ...prev, [id]: newPrice }))
+    }
+  }
+
   const handleSearch = (value) => {
     setSearchQuery(value)
     if (value.trim()) {
@@ -58,9 +79,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#FFF5F8]">
 
-      {/* 헤더 + 검색 + 필터바 sticky */}
       <div className="sticky top-0 z-20 bg-white shadow-sm">
-        {/* 헤더 */}
         <header className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-pink-400 leading-tight">🌸 DOT 마켓</h1>
@@ -78,7 +97,6 @@ export default function Home() {
           </button>
         </header>
 
-        {/* 검색바 */}
         <div className="max-w-4xl mx-auto px-4 pb-2.5">
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm">🔍</span>
@@ -100,7 +118,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 필터바 (검색 중엔 흐리게) */}
         <div className={`transition-opacity ${isSearching ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
           <FilterBar
             characters={characters}
@@ -113,9 +130,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 메인 콘텐츠 */}
       <main className="max-w-4xl mx-auto px-4 pb-16 pt-4">
-        {/* 결과 수 + 상태 표시 */}
         <div className="flex items-center justify-between mb-3">
           <p className="text-xs text-gray-400">
             {isSearching
@@ -133,7 +148,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* 상품 그리드 */}
         {filtered.length === 0 ? (
           <div className="text-center py-24 text-gray-300">
             <p className="text-5xl mb-3">🔍</p>
@@ -150,16 +164,17 @@ export default function Home() {
                 isAdmin={isAdmin}
                 isSoldOut={soldOutIds.has(product.id)}
                 onToggleSoldOut={() => toggleSoldOut(product.id)}
+                priceOverride={priceOverrides[product.id] ? Number(priceOverrides[product.id]) : null}
+                onUpdatePrice={updatePrice}
               />
             ))}
           </div>
         )}
       </main>
 
-      {/* 관리자 모달 */}
       {showAdminModal && (
         <AdminModal
-          onSuccess={() => { setIsAdmin(true); setShowAdminModal(false) }}
+          onSuccess={(pw) => { setIsAdmin(true); setAdminPassword(pw); setShowAdminModal(false) }}
           onClose={() => setShowAdminModal(false)}
         />
       )}

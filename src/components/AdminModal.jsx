@@ -17,7 +17,7 @@ export default function AdminModal({ onSuccess, onClose }) {
         body: JSON.stringify({ password }),
       })
       if (res.ok) {
-        onSuccess()
+        onSuccess(password)
       } else {
         setError(true)
         setPassword('')

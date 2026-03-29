@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import ImageCarousel from "./ImageCarousel";
 import { getProductImages } from "@/utils/images";
 
@@ -26,21 +27,43 @@ export default function ProductCard({
   isAdmin,
   isSoldOut,
   onToggleSoldOut,
+  priceOverride,
+  onUpdatePrice,
 }) {
   const { id, name, price, character, category, seller, imageCount } = product;
   const emoji = CHAR_EMOJI[character] || "⭐";
   const bg = CHAR_BG[character] || "bg-gray-50";
   const images = getProductImages(id, imageCount);
 
+  const displayPrice = priceOverride ?? price;
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const startEdit = () => {
+    setEditValue(String(displayPrice));
+    setEditing(true);
+  };
+
+  const savePrice = async () => {
+    const newPrice = parseInt(editValue);
+    if (isNaN(newPrice) || newPrice <= 0 || newPrice === displayPrice) {
+      setEditing(false);
+      return;
+    }
+    setSaving(true);
+    await onUpdatePrice(id, newPrice);
+    setSaving(false);
+    setEditing(false);
+  };
+
   return (
     <div
       className={`relative rounded-2xl bg-white border border-pink-100 shadow-sm overflow-hidden flex flex-col transition ${isSoldOut ? "opacity-60" : "hover:shadow-md"}`}
     >
-      {/* 이미지 캐러셀 (이미지 없으면 이모지 표시) */}
+      {/* 이미지 캐러셀 */}
       <div className="relative">
         <ImageCarousel images={images} fallbackEmoji={emoji} bg={bg} />
-
-        {/* 품절 오버레이 */}
         {isSoldOut && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center pointer-events-none">
             <span className="bg-gray-500 text-white text-xs font-bold px-3 py-1 rounded-full -rotate-12 shadow">
@@ -53,18 +76,48 @@ export default function ProductCard({
       {/* 상품 정보 */}
       <div className="p-2.5 flex flex-col gap-0.5 flex-1">
         <span className="text-[10px] text-gray-400">{category}</span>
-        <p className="text-sm font-medium text-gray-700 leading-snug line-clamp-2">
-          {name}
-        </p>
-        <p className="text-sm font-bold text-pink-400 mt-auto pt-1">
-          {price.toLocaleString()}원
-        </p>
+        <p className="text-sm font-medium text-gray-700 leading-snug line-clamp-2">{name}</p>
+
+        {/* 가격 - 관리자 모드에서 탭하면 수정 가능 */}
+        {isAdmin && editing ? (
+          <div className="flex items-center gap-1 mt-auto pt-1">
+            <input
+              type="number"
+              value={editValue}
+              onChange={e => setEditValue(e.target.value)}
+              onBlur={savePrice}
+              onKeyDown={e => e.key === 'Enter' && savePrice()}
+              className="w-full text-sm font-bold text-pink-400 border-b border-pink-300 outline-none bg-transparent"
+              autoFocus
+              disabled={saving}
+            />
+            <span className="text-sm font-bold text-pink-400 shrink-0">원</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 mt-auto pt-1">
+            <p className={`text-sm font-bold ${priceOverride ? 'text-orange-400' : 'text-pink-400'}`}>
+              {displayPrice.toLocaleString()}원
+            </p>
+            {priceOverride && (
+              <span className="text-[9px] text-gray-300 line-through">{price.toLocaleString()}</span>
+            )}
+            {isAdmin && (
+              <button
+                onClick={startEdit}
+                className="ml-auto text-[10px] text-gray-300 hover:text-gray-400 transition"
+              >
+                ✏️
+              </button>
+            )}
+          </div>
+        )}
+
         {isAdmin && seller && (
           <p className="text-[10px] text-gray-300 mt-0.5">판매자: {seller}</p>
         )}
       </div>
 
-      {/* 관리자 품절 토글 버튼 */}
+      {/* 관리자 품절 토글 */}
       {isAdmin && (
         <button
           onClick={onToggleSoldOut}
