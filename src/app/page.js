@@ -38,7 +38,7 @@ export default function Home() {
   }, [charFilter, catFilter])
 
   const characters = ['산리오', '치이카와', '해리포터', '죠죠', '뱅드림', '기타']
-  const categories = ['가챠', '피규어', '키링', '뱃지', '잡화', '다꾸']
+  const categories = ['가챠', '피규어', '키링', '인형키링', '뱃지', '잡화', '다꾸']
 
   const clearFilters = () => { setCharFilter(null); setCatFilter(null) }
   const isFiltered = charFilter || catFilter

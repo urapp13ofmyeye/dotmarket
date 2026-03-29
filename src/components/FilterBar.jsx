@@ -37,35 +37,6 @@ export default function FilterBar({
 }) {
   return (
     <div className="border-b border-pink-100">
-      {/* 캐릭터 필터 */}
-      <div className="scroll-x">
-        <div className="flex gap-2 px-4 py-2.5 min-w-max">
-          <button
-            onClick={() => setCharFilter(null)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
-              !charFilter
-                ? "bg-pink-400 text-white"
-                : "bg-gray-100 text-gray-400"
-            }`}
-          >
-            전체
-          </button>
-          {characters.map((char) => {
-            const s = CHAR_STYLE[char] || CHAR_STYLE["기타"];
-            const active = charFilter === char;
-            return (
-              <button
-                key={char}
-                onClick={() => setCharFilter(active ? null : char)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${active ? s.on : s.off}`}
-              >
-                {char}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       {/* 품목 필터 */}
       <div className="scroll-x border-t border-pink-50">
         <div className="flex gap-2 px-4 py-2.5 min-w-max">
@@ -77,7 +48,7 @@ export default function FilterBar({
                 : "bg-gray-100 text-gray-400"
             }`}
           >
-            전체
+            ALL
           </button>
           {categories.map((cat) => (
             <button
@@ -92,6 +63,34 @@ export default function FilterBar({
               {cat}
             </button>
           ))}
+        </div>
+      </div>
+      {/* 캐릭터 필터 */}
+      <div className="scroll-x">
+        <div className="flex gap-2 px-4 py-2.5 min-w-max">
+          <button
+            onClick={() => setCharFilter(null)}
+            className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
+              !charFilter
+                ? "bg-pink-400 text-white"
+                : "bg-gray-100 text-gray-400"
+            }`}
+          >
+            ALL
+          </button>
+          {characters.map((char) => {
+            const s = CHAR_STYLE[char] || CHAR_STYLE["기타"];
+            const active = charFilter === char;
+            return (
+              <button
+                key={char}
+                onClick={() => setCharFilter(active ? null : char)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${active ? s.on : s.off}`}
+              >
+                {char}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

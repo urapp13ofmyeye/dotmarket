@@ -37,6 +37,7 @@
  *   "가챠"
  *   "피규어"
  *   "키링"
+ *   "인형키링"
  *   "뱃지"
  *   "잡화"
  *   "다꾸"
@@ -72,7 +73,7 @@ const products = [
   },
   {
     id: 3,
-    name: "오렌지 푸딩 가챠",
+    name: "언제오려나 컬러풀젤리 오렌지 가챠",
     price: 1000,
     character: "기타",
     category: "가챠",
@@ -128,6 +129,7 @@ const products = [
     category: "잡화",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -138,7 +140,7 @@ const products = [
     category: "잡화",
     seller: "서현",
     description: "",
-    imageCount: 1,
+    imageCount: 2,
     image: null,
   },
   {
@@ -175,7 +177,7 @@ const products = [
   },
   {
     id: 13,
-    name: "해리포터 펠릭스 뱃지",
+    name: "해리포터 펠릭스 펠리시스 뱃지",
     price: 2000,
     character: "해리포터",
     category: "뱃지",
@@ -255,7 +257,7 @@ const products = [
   },
   {
     id: 21,
-    name: "센치행 치히로 뱃지",
+    name: "센과치히로의행방불명 치히로 편지 뱃지",
     price: 2000,
     character: "기타",
     category: "뱃지",
@@ -265,7 +267,7 @@ const products = [
   },
   {
     id: 22,
-    name: "뱅드림 하로하피 미셸 아크릴",
+    name: "뱅드림 하로하피 미셸 아크릴 키링",
     price: 4000,
     character: "뱅드림",
     category: "키링",
@@ -317,7 +319,7 @@ const products = [
   },
   {
     id: 27,
-    name: "대만 형광 주황 별 피규어 키링",
+    name: "MEKAMEE SEASTAR 야광 주황 별 키링",
     price: 1500,
     character: "기타",
     category: "키링",
@@ -327,7 +329,7 @@ const products = [
   },
   {
     id: 28,
-    name: "네잎클로버 플라스틱 키링",
+    name: "네잎클로버 키링",
     price: 1000,
     character: "기타",
     category: "키링",
@@ -337,7 +339,7 @@ const products = [
   },
   {
     id: 29,
-    name: "앙스타 사쿠마 리츠 뱃지",
+    name: "앙스타 사쿠마 리츠 핀버튼 뱃지",
     price: 1000,
     character: "기타",
     category: "뱃지",
@@ -387,7 +389,7 @@ const products = [
   },
   {
     id: 34,
-    name: "미스터 드릴러 아저씨 메지루시 키링",
+    name: "미스터 드릴러 호리 타이조 메지루시 키링",
     price: 1000,
     character: "기타",
     category: "키링",
@@ -397,7 +399,7 @@ const products = [
   },
   {
     id: 35,
-    name: "미스터 드릴러 파랭이 메지루시 키링",
+    name: "미스터 드릴러 안나 호텐마이어 메지루시 키링",
     price: 1000,
     character: "기타",
     category: "키링",
@@ -862,6 +864,76 @@ const products = [
     character: "기타",
     category: "잡화",
     seller: "서현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 82,
+    name: "꾸벅 해리포터 피규어",
+    price: 4000,
+    character: "해리포터",
+    category: "피규어",
+    seller: "주은",
+    description: "",
+    image: null,
+  },
+  {
+    id: 83,
+    name: "케로로 피규어",
+    price: 3000,
+    character: "기타",
+    category: "피규어",
+    seller: "주은",
+    description: "",
+    image: null,
+  },
+  {
+    id: 84,
+    name: "히나쿠우 숭마모리 키링",
+    price: 4000,
+    character: "기타",
+    category: "키링",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 85,
+    name: "체리 후우링 키링",
+    price: 1500,
+    character: "기타",
+    category: "키링",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 86,
+    name: "팬케이크 키링",
+    price: 1000,
+    character: "기타",
+    category: "키링",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 87,
+    name: "나메코 장군나메코 스트랩",
+    price: 2000,
+    character: "기타",
+    category: "키링",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 88,
+    name: "만두고양이 핀버튼 뱃지",
+    price: 1000,
+    character: "기타",
+    category: "뱃지",
+    seller: "시현",
     description: "",
     image: null,
   },
