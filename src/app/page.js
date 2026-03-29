@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import Link from 'next/link'
 import products from '@/data/products'
 import FilterBar from '@/components/FilterBar'
 import ProductCard from '@/components/ProductCard'
@@ -212,6 +213,14 @@ export default function Home() {
                 )}
               </button>
             )}
+            {isAdmin && (
+              <Link
+                href="/settlement"
+                className="text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-400 hover:bg-gray-50 transition"
+              >
+                📊 결산
+              </Link>
+            )}
             <button
               onClick={() => {
                 isAdmin ? setIsAdmin(false) : setShowAdminModal(true)
@@ -325,7 +334,7 @@ export default function Home() {
 
       {showAdminModal && (
         <AdminModal
-          onSuccess={(pw) => { setIsAdmin(true); setAdminPassword(pw); setShowAdminModal(false) }}
+          onSuccess={(pw) => { setIsAdmin(true); setAdminPassword(pw); setShowAdminModal(false); sessionStorage.setItem('dot_admin_pw', pw) }}
           onClose={() => setShowAdminModal(false)}
         />
       )}
