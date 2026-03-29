@@ -714,6 +714,7 @@ const products = [
     description: "",
     image: null,
   },
+  /*
   {
     id: 67,
     name: "죠죠 1부 스피드웨건 사운드드롭 가챠",
@@ -724,6 +725,7 @@ const products = [
     description: "",
     image: null,
   },
+  */
   {
     id: 68,
     name: "웨이크메이크 아이라이너",
