@@ -1040,6 +1040,16 @@ const products = [
     description: "",
     image: null,
   },
+  {
+    id: 98,
+    name: "춘식이 마우스패드",
+    price: 4000,
+    character: "기타",
+    category: "잡화",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
 ];
 
 export default products;
