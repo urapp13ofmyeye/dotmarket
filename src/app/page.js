@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 import products from "@/data/products";
 import FilterBar from "@/components/FilterBar";
@@ -8,6 +8,7 @@ import ProductCard from "@/components/ProductCard";
 import AdminModal from "@/components/AdminModal";
 import CartDrawer from "@/components/CartDrawer";
 import SoldOutDrawer from "@/components/SoldOutDrawer";
+import LazyCard from "@/components/LazyCard";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function Home() {
@@ -17,6 +18,11 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
+
+  // useCallback에서 최신 값을 읽기 위한 ref
+  const adminPasswordRef = useRef(adminPassword);
+  const soldOutIdsRef = useRef(new Set());
+  useEffect(() => { adminPasswordRef.current = adminPassword; }, [adminPassword]);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [soldOutIds, setSoldOutIds] = useState(new Set());
   const [priceOverrides, setPriceOverrides] = useState({});
@@ -42,7 +48,11 @@ export default function Home() {
   useEffect(() => {
     fetch("/api/soldout")
       .then((r) => r.json())
-      .then((ids) => setSoldOutIds(new Set(ids)))
+      .then((ids) => {
+        const s = new Set(ids);
+        soldOutIdsRef.current = s;
+        setSoldOutIds(s);
+      })
       .catch(() => {});
   }, []);
 
@@ -75,16 +85,20 @@ export default function Home() {
   }, []);
 
   // 단일 품절 토글 (관리자 카드 버튼)
-  const toggleSoldOut = async (id) => {
-    const next = new Set(soldOutIds);
+  const toggleSoldOut = useCallback(async (id) => {
+    const current = soldOutIdsRef.current;
+    const next = new Set(current);
     next.has(id) ? next.delete(id) : next.add(id);
     const res = await fetch("/api/soldout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: adminPassword, ids: [...next] }),
+      body: JSON.stringify({ password: adminPasswordRef.current, ids: [...next] }),
     });
-    if (res.ok) setSoldOutIds(next);
-  };
+    if (res.ok) {
+      soldOutIdsRef.current = next;
+      setSoldOutIds(next);
+    }
+  }, []);
 
   // 빠른 품절 모드 진입
   const enterQuickMode = () => {
@@ -98,13 +112,13 @@ export default function Home() {
   };
 
   // 빠른 품절 모드 - 카드 탭
-  const toggleQuickSelect = (id) => {
+  const toggleQuickSelect = useCallback((id) => {
     setPendingSoldOut((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
-  };
+  }, []);
 
   // 이번 거래에서 새로 선택한 항목 (pendingSoldOut - soldOutIds)
   const sessionItems = useMemo(() => {
@@ -143,13 +157,14 @@ export default function Home() {
     setConfirmingQuick(false);
   };
 
-  const updatePrice = async (id, newPrice) => {
+  const updatePrice = useCallback(async (id, newPrice) => {
     const isReset = newPrice === null;
+    const pw = adminPasswordRef.current;
     const res = await fetch("/api/prices", {
       method: isReset ? "DELETE" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(
-        isReset ? { password: adminPassword, id } : { password: adminPassword, id, price: newPrice },
+        isReset ? { password: pw, id } : { password: pw, id, price: newPrice },
       ),
     });
     if (res.ok) {
@@ -160,9 +175,9 @@ export default function Home() {
         return next;
       });
     }
-  };
+  }, []);
 
-  const updateCart = (id, qty) => {
+  const updateCart = useCallback((id, qty) => {
     setCartItems((prev) => {
       const next = { ...prev };
       if (qty <= 0) delete next[id];
@@ -170,11 +185,17 @@ export default function Home() {
       localStorage.setItem("dot_cart", JSON.stringify(next));
       return next;
     });
-  };
+  }, []);
 
-  const toggleCart = (id) => {
-    updateCart(id, cartItems[id] ? 0 : 1);
-  };
+  const toggleCart = useCallback((id) => {
+    setCartItems((prev) => {
+      const next = { ...prev };
+      if (next[id]) delete next[id];
+      else next[id] = 1;
+      localStorage.setItem("dot_cart", JSON.stringify(next));
+      return next;
+    });
+  }, []);
 
   const cartCount = Object.values(cartItems).reduce((sum, q) => sum + q, 0);
 
@@ -334,21 +355,22 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {filtered.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isAdmin={isAdmin}
-                isSoldOut={soldOutIds.has(product.id)}
-                onToggleSoldOut={() => toggleSoldOut(product.id)}
-                priceOverride={priceOverrides[product.id] ? Number(priceOverrides[product.id]) : null}
-                onUpdatePrice={updatePrice}
-                cartQty={cartItems[product.id] || 0}
-                onToggleCart={() => toggleCart(product.id)}
-                quickMode={quickMode}
-                isQuickSelected={sessionItems.has(product.id)}
-                isQuickRemoved={removedItems.has(product.id)}
-                onQuickToggle={() => toggleQuickSelect(product.id)}
-              />
+              <LazyCard key={product.id}>
+                <ProductCard
+                  product={product}
+                  isAdmin={isAdmin}
+                  isSoldOut={soldOutIds.has(product.id)}
+                  onToggleSoldOut={toggleSoldOut}
+                  priceOverride={priceOverrides[product.id] ? Number(priceOverrides[product.id]) : null}
+                  onUpdatePrice={updatePrice}
+                  cartQty={cartItems[product.id] || 0}
+                  onToggleCart={toggleCart}
+                  quickMode={quickMode}
+                  isQuickSelected={sessionItems.has(product.id)}
+                  isQuickRemoved={removedItems.has(product.id)}
+                  onQuickToggle={toggleQuickSelect}
+                />
+              </LazyCard>
             ))}
           </div>
         )}

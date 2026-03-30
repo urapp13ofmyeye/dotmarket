@@ -53,6 +53,8 @@ export default function ImageCarousel({ images, fallbackEmoji, bg }) {
               <img
                 src={src}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover"
                 draggable={false}
                 onError={() => setFailed(prev => new Set([...prev, i]))}

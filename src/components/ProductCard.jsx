@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import ImageCarousel from "./ImageCarousel";
 import { getProductImages } from "@/utils/images";
 
@@ -33,7 +33,7 @@ function getCardStyle(quickMode, isQuickSelected, isQuickRemoved, isSoldOut, inC
   return "border border-pink-100 shadow-sm hover:shadow-md";
 }
 
-export default function ProductCard({
+const ProductCard = memo(function ProductCard({
   product,
   isAdmin,
   isSoldOut,
@@ -79,7 +79,7 @@ export default function ProductCard({
 
   return (
     <div
-      onClick={quickMode ? onQuickToggle : undefined}
+      onClick={quickMode ? () => onQuickToggle(id) : undefined}
       className={`relative rounded-2xl bg-white overflow-hidden flex flex-col transition-all duration-200 ${getCardStyle(quickMode, isQuickSelected, isQuickRemoved, isSoldOut, inCart)}`}
     >
       {/* 이미지 캐러셀 */}
@@ -107,7 +107,7 @@ export default function ProductCard({
         {/* 장바구니 아이콘 버튼 (우측 상단) */}
         {!isAdmin && !isSoldOut && (
           <button
-            onClick={onToggleCart}
+            onClick={(e) => { e.stopPropagation(); onToggleCart(id) }}
             className={`absolute top-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
               inCart ? "bg-pink-400 shadow-md" : "bg-white/80 shadow-sm"
             }`}
@@ -168,4 +168,6 @@ export default function ProductCard({
       </div>
     </div>
   );
-}
+});
+
+export default ProductCard;
