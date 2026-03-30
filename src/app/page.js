@@ -147,9 +147,7 @@ export default function Home() {
       method: isReset ? "DELETE" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(
-        isReset
-          ? { password: adminPassword, id }
-          : { password: adminPassword, id, price: newPrice },
+        isReset ? { password: adminPassword, id } : { password: adminPassword, id, price: newPrice },
       ),
     });
     if (res.ok) {
@@ -199,23 +197,8 @@ export default function Home() {
     });
   }, [charFilter, catFilter, searchQuery, showSoldOut, soldOutIds]);
 
-  const characters = [
-    "산리오",
-    "치이카와",
-    "해리포터",
-    "죠죠",
-    "뱅드림",
-    "기타",
-  ];
-  const categories = [
-    "가챠",
-    "피규어",
-    "키링",
-    "인형키링",
-    "뱃지",
-    "잡화",
-    "다꾸",
-  ];
+  const characters = ["산리오", "치이카와", "해리포터", "죠죠", "뱅드림", "기타"];
+  const categories = ["가챠", "피규어", "키링", "인형키링", "뱃지", "잡화", "다꾸"];
 
   const isFiltered = charFilter || catFilter;
   const isSearching = searchQuery.trim().length > 0;
@@ -225,12 +208,13 @@ export default function Home() {
       <div className="sticky top-0 z-20 bg-white shadow-sm">
         <header className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold text-pink-400 leading-tight">
-              🌸 DOT 마켓
+            <h1
+              className="text-lg font-bold text-pink-400 leading-tight"
+              style={{ fontFamily: "'Library', sans-serif" }}
+            >
+              DOT 마켓
             </h1>
-            <p className="text-[11px] text-gray-400">
-              3/31(화) 10AM~4PM | 일일 돗자리마켓
-            </p>
+            <p className="text-[9px] text-gray-400">3/31(화) 10AM~4PM | 일일 돗자리마켓</p>
           </div>
           <div className="flex items-center gap-2">
             {/* 장바구니 버튼 */}
@@ -277,9 +261,7 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto px-4 pb-2.5">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm">
-              🔍
-            </span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm">🔍</span>
             <input
               type="text"
               value={searchQuery}
@@ -298,9 +280,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div
-          className={`transition-opacity ${isSearching ? "opacity-30 pointer-events-none" : "opacity-100"}`}
-        >
+        <div className={`transition-opacity ${isSearching ? "opacity-30 pointer-events-none" : "opacity-100"}`}>
           <FilterBar
             characters={characters}
             categories={categories}
@@ -320,22 +300,12 @@ export default function Home() {
           <p className="text-xs text-gray-400">
             {isSearching ? (
               <>
-                <span className="text-pink-400 font-medium">
-                  "{searchQuery}"
-                </span>{" "}
-                검색 결과{" "}
-                <span className="font-semibold text-gray-500">
-                  {filtered.length}
-                </span>
-                개
+                <span className="text-pink-400 font-medium">"{searchQuery}"</span> 검색 결과{" "}
+                <span className="font-semibold text-gray-500">{filtered.length}</span>개
               </>
             ) : (
               <>
-                상품{" "}
-                <span className="font-semibold text-gray-500">
-                  {filtered.length}
-                </span>
-                개
+                상품 <span className="font-semibold text-gray-500">{filtered.length}</span>개
               </>
             )}
           </p>
@@ -356,9 +326,7 @@ export default function Home() {
           <div className="text-center py-24 text-gray-300">
             <p className="text-5xl mb-3">🔍</p>
             <p className="text-sm">
-              {isSearching
-                ? `"${searchQuery}"에 해당하는 상품이 없어요`
-                : "해당하는 상품이 없어요"}
+              {isSearching ? `"${searchQuery}"에 해당하는 상품이 없어요` : "해당하는 상품이 없어요"}
             </p>
           </div>
         ) : (
@@ -370,11 +338,7 @@ export default function Home() {
                 isAdmin={isAdmin}
                 isSoldOut={soldOutIds.has(product.id)}
                 onToggleSoldOut={() => toggleSoldOut(product.id)}
-                priceOverride={
-                  priceOverrides[product.id]
-                    ? Number(priceOverrides[product.id])
-                    : null
-                }
+                priceOverride={priceOverrides[product.id] ? Number(priceOverrides[product.id]) : null}
                 onUpdatePrice={updatePrice}
                 cartQty={cartItems[product.id] || 0}
                 onToggleCart={() => toggleCart(product.id)}

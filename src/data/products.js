@@ -49,7 +49,7 @@
 const products = [
   {
     id: 1,
-    name: "산리오 헬로키티 초코에그 세트3 (비행기·갸루·샐러리맨)",
+    name: "산리오 헬로키티 초코에그 세트1 (비행기·갸루·샐러리맨)",
     price: 3000,
     character: "산리오",
     category: "가챠",
@@ -59,7 +59,7 @@ const products = [
   },
   {
     id: 2,
-    name: "산리오 헬로키티 초코에그 세트1 (라쿤·사다코·로봇)",
+    name: "산리오 헬로키티 초코에그 세트2 (라쿤·사다코·로봇)",
     price: 3000,
     character: "산리오",
     category: "가챠",
@@ -69,7 +69,7 @@ const products = [
   },
   {
     id: 3,
-    name: "산리오 헬로키티 초코에그 세트2 (초밥·중화만두)",
+    name: "산리오 헬로키티 초코에그 세트3 (초밥·중화만두)",
     price: 3000,
     character: "산리오",
     category: "가챠",

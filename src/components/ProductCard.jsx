@@ -96,17 +96,13 @@ export default function ProductCard({
         {/* 새로 품절 선택 */}
         {quickMode && isQuickSelected && (
           <div className="absolute inset-0 bg-red-400/20 flex items-center justify-center pointer-events-none">
-            <span className="bg-red-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-              ✓ 품절
-            </span>
+            <span className="bg-red-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">✓ 품절</span>
           </div>
         )}
         {/* 품절 해제 예정 */}
         {quickMode && isQuickRemoved && (
           <div className="absolute inset-0 bg-blue-400/20 flex items-center justify-center pointer-events-none">
-            <span className="bg-blue-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-              ↩ 해제
-            </span>
+            <span className="bg-blue-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">↩ 해제</span>
           </div>
         )}
         {/* 장바구니 아이콘 버튼 (우측 상단) */}
@@ -132,7 +128,7 @@ export default function ProductCard({
       {/* 상품 정보 */}
       <div className="p-2.5 flex flex-col gap-0.5 flex-1">
         <span className="text-[10px] text-gray-400">{category}</span>
-        <p className="text-sm font-medium text-gray-700 leading-snug line-clamp-2">
+        <p className="font-medium text-gray-700 leading-snug line-clamp-2" style={{ fontSize: "0.75rem" }}>
           {name}
         </p>
 
@@ -153,16 +149,10 @@ export default function ProductCard({
           </div>
         ) : (
           <div className="flex items-center gap-1 mt-auto pt-1">
-            <p
-              className={`text-sm font-bold ${priceOverride ? "text-orange-400" : "text-pink-400"}`}
-            >
+            <p className={`text-sm font-bold ${priceOverride ? "text-orange-400" : "text-pink-400"}`}>
               {displayPrice.toLocaleString()}원
             </p>
-            {priceOverride && (
-              <span className="text-[9px] text-gray-300 line-through">
-                {price.toLocaleString()}
-              </span>
-            )}
+            {priceOverride && <span className="text-[9px] text-gray-300 line-through">{price.toLocaleString()}</span>}
             {isAdmin && (
               <button
                 onClick={(e) => {
