@@ -8,8 +8,10 @@ import ProductCard from "@/components/ProductCard";
 import AdminModal from "@/components/AdminModal";
 import CartDrawer from "@/components/CartDrawer";
 import SoldOutDrawer from "@/components/SoldOutDrawer";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function Home() {
+  const { save: saveAdminPw, clear: clearAdminPw, getSaved } = useAdminAuth();
   const [charFilter, setCharFilter] = useState(null);
   const [catFilter, setCatFilter] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +31,7 @@ export default function Home() {
 
   // 관리자 세션 복원
   useEffect(() => {
-    const saved = sessionStorage.getItem("dot_admin_pw");
+    const saved = getSaved();
     if (saved) {
       setAdminPassword(saved);
       setIsAdmin(true);
@@ -76,12 +78,12 @@ export default function Home() {
   const toggleSoldOut = async (id) => {
     const next = new Set(soldOutIds);
     next.has(id) ? next.delete(id) : next.add(id);
-    setSoldOutIds(next);
-    await fetch("/api/soldout", {
+    const res = await fetch("/api/soldout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: adminPassword, ids: [...next] }),
     });
+    if (res.ok) setSoldOutIds(next);
   };
 
   // 빠른 품절 모드 진입
@@ -243,7 +245,7 @@ export default function Home() {
               onClick={() => {
                 if (isAdmin) {
                   setIsAdmin(false);
-                  sessionStorage.removeItem("dot_admin_pw");
+                  clearAdminPw();
                 } else {
                   setShowAdminModal(true);
                 }
@@ -370,7 +372,7 @@ export default function Home() {
             setIsAdmin(true);
             setAdminPassword(pw);
             setShowAdminModal(false);
-            sessionStorage.setItem("dot_admin_pw", pw);
+            saveAdminPw(pw);
           }}
           onClose={() => setShowAdminModal(false)}
         />

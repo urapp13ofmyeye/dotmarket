@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import products from "@/data/products";
+import { enrichProducts } from "@/lib/enrichProducts";
 
 export default function SoldOutDrawer({
   sessionItems,
@@ -20,29 +20,9 @@ export default function SoldOutDrawer({
     requestAnimationFrame(() => setVisible(true));
   }, []);
 
-  const selectedList = [...sessionItems]
-    .map((id) => {
-      const product = products.find((p) => p.id === Number(id));
-      if (!product) return null;
-      const price = priceOverrides[id]
-        ? Number(priceOverrides[id])
-        : product.price;
-      return { ...product, price };
-    })
-    .filter(Boolean);
-
+  const selectedList = enrichProducts(sessionItems, priceOverrides);
   const total = selectedList.reduce((sum, item) => sum + item.price, 0);
-
-  const removedList = [...(removedItems || [])]
-    .map((id) => {
-      const product = products.find((p) => p.id === Number(id));
-      if (!product) return null;
-      const price = priceOverrides[id]
-        ? Number(priceOverrides[id])
-        : product.price;
-      return { ...product, price };
-    })
-    .filter(Boolean);
+  const removedList = enrichProducts(removedItems || [], priceOverrides);
 
   const handleCancel = () => {
     onCancel();

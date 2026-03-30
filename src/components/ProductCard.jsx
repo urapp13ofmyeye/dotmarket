@@ -22,6 +22,17 @@ const CHAR_BG = {
   기타: "bg-emerald-50",
 };
 
+function getCardStyle(quickMode, isQuickSelected, isQuickRemoved, isSoldOut, inCart) {
+  if (quickMode) {
+    if (isQuickSelected) return "border-2 border-red-400 shadow-md shadow-red-100 cursor-pointer";
+    if (isQuickRemoved) return "border-2 border-blue-400 shadow-md shadow-blue-100 cursor-pointer";
+    return "border border-pink-100 shadow-sm cursor-pointer";
+  }
+  if (isSoldOut) return "opacity-60 border border-pink-100 shadow-sm";
+  if (inCart) return "border-2 border-pink-400 shadow-md shadow-pink-100";
+  return "border border-pink-100 shadow-sm hover:shadow-md";
+}
+
 export default function ProductCard({
   product,
   isAdmin,
@@ -69,19 +80,7 @@ export default function ProductCard({
   return (
     <div
       onClick={quickMode ? onQuickToggle : undefined}
-      className={`relative rounded-2xl bg-white overflow-hidden flex flex-col transition-all duration-200 ${
-        quickMode
-          ? isQuickSelected
-            ? "border-2 border-red-400 shadow-md shadow-red-100 cursor-pointer"
-            : isQuickRemoved
-              ? "border-2 border-blue-400 shadow-md shadow-blue-100 cursor-pointer"
-              : "border border-pink-100 shadow-sm cursor-pointer"
-          : isSoldOut
-            ? "opacity-60 border border-pink-100 shadow-sm"
-            : inCart
-              ? "border-2 border-pink-400 shadow-md shadow-pink-100"
-              : "border border-pink-100 shadow-sm hover:shadow-md"
-      }`}
+      className={`relative rounded-2xl bg-white overflow-hidden flex flex-col transition-all duration-200 ${getCardStyle(quickMode, isQuickSelected, isQuickRemoved, isSoldOut, inCart)}`}
     >
       {/* 이미지 캐러셀 */}
       <div className="relative">

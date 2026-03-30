@@ -1,32 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 
 export default function AdminModal({ onSuccess, onClose }) {
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const { verify, loading, error, setError } = useAdminAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    try {
-      const res = await fetch('/api/admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      })
-      if (res.ok) {
-        onSuccess(password)
-      } else {
-        setError(true)
-        setPassword('')
-      }
-    } catch {
-      setError(true)
+    const ok = await verify(password)
+    if (ok) {
+      onSuccess(password)
+    } else {
       setPassword('')
-    } finally {
-      setLoading(false)
     }
   }
 

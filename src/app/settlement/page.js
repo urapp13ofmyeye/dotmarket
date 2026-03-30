@@ -3,46 +3,35 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import products from "@/data/products";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function SettlementPage() {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { verify, loading, error, setError, getSaved } = useAdminAuth();
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [password, setPassword] = useState("");
   const [soldOutIds, setSoldOutIds] = useState([]);
   const [priceOverrides, setPriceOverrides] = useState({});
   const [openSellers, setOpenSellers] = useState({});
 
+  const fetchData = async () => {
+    const [soldoutRes, pricesRes] = await Promise.all([
+      fetch("/api/soldout"),
+      fetch("/api/prices"),
+    ]);
+    setSoldOutIds(await soldoutRes.json());
+    setPriceOverrides(await pricesRes.json());
+    setAuthed(true);
+  };
+
   const fetchAndAuth = async (pw) => {
-    setLoading(true);
-    setError(false);
-    try {
-      const res = await fetch("/api/admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: pw }),
-      });
-      if (!res.ok) {
-        setError(true);
-        setLoading(false);
-        return;
-      }
-      const [soldoutRes, pricesRes] = await Promise.all([
-        fetch("/api/soldout"),
-        fetch("/api/prices"),
-      ]);
-      setSoldOutIds(await soldoutRes.json());
-      setPriceOverrides(await pricesRes.json());
-      setAuthed(true);
-    } catch {
-      setError(true);
-    }
-    setLoading(false);
+    const ok = await verify(pw);
+    if (!ok) return;
+    await fetchData();
   };
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("dot_admin_pw");
+    const saved = getSaved();
     if (saved) {
       fetchAndAuth(saved).finally(() => setChecking(false));
     } else {
@@ -50,7 +39,7 @@ export default function SettlementPage() {
     }
   }, []);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     fetchAndAuth(password);
   };
@@ -60,25 +49,22 @@ export default function SettlementPage() {
   };
 
   const sellerList = useMemo(() => {
-    const allSellers = [...new Set(products.map((p) => p.seller || "미지정"))];
-
-    return allSellers
-      .map((seller) => {
-        const soldItems = products
-          .filter(
-            (p) =>
-              (p.seller || "미지정") === seller && soldOutIds.includes(p.id),
-          )
-          .map((p) => {
-            const price = priceOverrides[p.id]
-              ? Number(priceOverrides[p.id])
-              : p.price;
-            return { ...p, finalPrice: price };
-          });
-        const count = soldItems.length;
-        const subtotal = soldItems.reduce((sum, p) => sum + p.finalPrice, 0);
-        return { seller, items: soldItems, count, subtotal };
-      })
+    const sellerMap = {};
+    for (const p of products) {
+      const seller = p.seller || "미지정";
+      if (!sellerMap[seller]) sellerMap[seller] = [];
+      if (soldOutIds.includes(p.id)) {
+        const price = priceOverrides[p.id] ? Number(priceOverrides[p.id]) : p.price;
+        sellerMap[seller].push({ ...p, finalPrice: price });
+      }
+    }
+    return Object.entries(sellerMap)
+      .map(([seller, items]) => ({
+        seller,
+        items,
+        count: items.length,
+        subtotal: items.reduce((sum, p) => sum + p.finalPrice, 0),
+      }))
       .sort((a, b) => b.subtotal - a.subtotal);
   }, [soldOutIds, priceOverrides]);
 
@@ -160,7 +146,6 @@ export default function SettlementPage() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-5 pb-16 flex flex-col gap-3">
-        {/* 판매자별 카드 */}
         {sellerList.map(({ seller, items, count, subtotal }) => {
           const isOpen = openSellers[seller];
           const hasSales = count > 0;
@@ -169,7 +154,6 @@ export default function SettlementPage() {
               key={seller}
               className="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden"
             >
-              {/* 판매자 헤더 (항상 표시) */}
               <button
                 onClick={() => hasSales && toggleSeller(seller)}
                 className={`w-full px-5 py-3.5 flex items-center justify-between ${hasSales ? "cursor-pointer active:bg-gray-50" : "cursor-default"}`}
@@ -185,7 +169,6 @@ export default function SettlementPage() {
                 </div>
               </button>
 
-              {/* 품목 목록 (토글) */}
               {isOpen && hasSales && (
                 <div className="border-t border-gray-50 divide-y divide-gray-50">
                   {items.map((item) => (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import products from '@/data/products'
+import { enrichProducts } from '@/lib/enrichProducts'
 
 export default function CartDrawer({ cartItems, priceOverrides, onUpdateQty, onClose }) {
   const [visible, setVisible] = useState(false)
@@ -33,14 +33,7 @@ export default function CartDrawer({ cartItems, priceOverrides, onUpdateQty, onC
     touchStartY.current = null
   }
 
-  const cartList = Object.entries(cartItems)
-    .map(([id]) => {
-      const product = products.find(p => p.id === Number(id))
-      if (!product) return null
-      const price = priceOverrides[id] ? Number(priceOverrides[id]) : product.price
-      return { ...product, price }
-    })
-    .filter(Boolean)
+  const cartList = enrichProducts(Object.keys(cartItems), priceOverrides)
 
   const total = cartList.reduce((sum, item) => sum + item.price, 0)
 
