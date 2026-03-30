@@ -952,7 +952,7 @@ const products = [
   },
   {
     id: 89,
-    name: "히나쿠우 숭마모리 키링",
+    name: "히나쿠우 오마모리 키링",
     price: 4000,
     character: "기타",
     category: "키링",
