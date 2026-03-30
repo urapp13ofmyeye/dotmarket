@@ -32,8 +32,6 @@
  *   "인형키링"
  *   "뱃지"
  *   "잡화"
- *   "다꾸"
- *   "화장품"
  *
  * ── 이미지 사용법 ──
  *   imageCount 생략  →  {id}-1.png 자동 시도, 파일 없으면 이모지 표시
@@ -741,7 +739,7 @@ const products = [
     name: "웨이크메이크 아이라이너 (~26.07)",
     price: 1000,
     character: "기타",
-    category: "화장품",
+    category: "잡화",
     seller: "시현",
     description: "",
     image: null,
@@ -751,7 +749,7 @@ const products = [
     name: "키스미 롱앤컬 마스카라 (~26.05)",
     price: 1000,
     character: "기타",
-    category: "화장품",
+    category: "잡화",
     seller: "시현",
     description: "",
     image: null,
