@@ -275,6 +275,7 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
@@ -295,11 +296,12 @@ const products = [
     category: "뱃지",
     seller: "서현",
     description: "",
+    imageCount: 2,
     image: null,
   },
   {
     id: 25,
-    name: "뱅드림 하로하피 미셸 아크릴 키링",
+    name: "뱅드림 하로하피 미셸 아크릴 스탠드 키링",
     price: 3000,
     character: "뱅드림",
     category: "키링",
@@ -310,7 +312,7 @@ const products = [
   {
     id: 26,
     name: "커비프렌즈 3 둥글둥글커비 피규어",
-    price: 1500,
+    price: 2000,
     character: "기타",
     category: "피규어",
     seller: "서현",
@@ -453,7 +455,7 @@ const products = [
   {
     id: 40,
     name: "오리 인형 키링",
-    price: 1000,
+    price: 1500,
     character: "기타",
     category: "인형키링",
     seller: "서현",
@@ -583,7 +585,7 @@ const products = [
   {
     id: 53,
     name: "메론 소다 인형 키링",
-    price: 1000,
+    price: 1500,
     character: "기타",
     category: "인형키링",
     seller: "서현",
@@ -613,7 +615,7 @@ const products = [
   {
     id: 56,
     name: "죠죠 4부 뵤옹 곶 피규어 스탬프 쿠지 F상",
-    price: 2000,
+    price: 2500,
     character: "죠죠",
     category: "피규어",
     seller: "서현",
@@ -649,6 +651,7 @@ const products = [
     category: "가챠",
     seller: "서현",
     description: "",
+    imageCount: 4,
     image: null,
   },
   {
@@ -674,7 +677,7 @@ const products = [
   {
     id: 62,
     name: "산리오 바츠마루 펭귄 가챠",
-    price: 1000,
+    price: 1500,
     character: "산리오",
     category: "가챠",
     seller: "서현",
@@ -694,7 +697,7 @@ const products = [
   {
     id: 64,
     name: "산리오 폼폼푸린 디저트 가챠",
-    price: 1000,
+    price: 1500,
     character: "산리오",
     category: "가챠",
     seller: "서현",
@@ -735,7 +738,7 @@ const products = [
 
   {
     id: 68,
-    name: "웨이크메이크 아이라이너",
+    name: "웨이크메이크 아이라이너 (~26.07)",
     price: 1000,
     character: "기타",
     category: "화장품",
@@ -745,7 +748,7 @@ const products = [
   },
   {
     id: 69,
-    name: "키스미 롱앤컬 마스카라",
+    name: "키스미 롱앤컬 마스카라 (~26.05)",
     price: 1000,
     character: "기타",
     category: "화장품",
@@ -889,7 +892,7 @@ const products = [
   },
   {
     id: 83,
-    name: "우표 마스킹 테이프",
+    name: "우표 마스킹 테이프 1",
     price: 1000,
     character: "기타",
     category: "다꾸",
@@ -922,7 +925,7 @@ const products = [
   {
     id: 86,
     name: "아일릿 NOT CUTE ANYMORE 맥세이프 카드지갑",
-    price: 2000,
+    price: 2500,
     character: "기타",
     category: "잡화",
     seller: "서현",
@@ -999,7 +1002,46 @@ const products = [
     description: "",
     image: null,
   },
-  // 여기에 상품을 추가하세요 ↓
+  {
+    id: 94,
+    name: "우표 마스킹 테이프 2",
+    price: 1000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 95,
+    name: "소녀 마스킹 테이프",
+    price: 1000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 96,
+    name: "일상 마스킹 테이프",
+    price: 1000,
+    character: "기타",
+    category: "다꾸",
+    seller: "시현",
+    description: "",
+    image: null,
+  },
+  {
+    id: 97,
+    name: "비온뒤 러버스 레코드 6공 콜렉트북 (+파일 40매)",
+    price: 3000,
+    character: "기타",
+    category: "다꾸",
+    seller: "서현",
+    description: "",
+    image: null,
+  },
 ];
 
 export default products;

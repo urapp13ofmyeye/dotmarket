@@ -42,7 +42,7 @@ export default function FilterBar({
     <div className="border-b border-pink-100">
       {/* 품목 필터 */}
       <div className="scroll-x border-t border-pink-50">
-        <div className="flex gap-2 px-4 py-2.5 min-w-max">
+        <div className="max-w-4xl mx-auto flex gap-2 px-4 py-2.5 min-w-max sm:min-w-0 sm:flex-wrap">
           <button
             onClick={() => { setCatFilter(null); setShowSoldOut && setShowSoldOut(false) }}
             className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
@@ -82,7 +82,7 @@ export default function FilterBar({
       </div>
       {/* 캐릭터 필터 */}
       <div className="scroll-x">
-        <div className="flex gap-2 px-4 py-2.5 min-w-max">
+        <div className="max-w-4xl mx-auto flex gap-2 px-4 py-2.5 min-w-max sm:min-w-0 sm:flex-wrap">
           <button
             onClick={() => { setCharFilter(null); setShowSoldOut && setShowSoldOut(false) }}
             className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
