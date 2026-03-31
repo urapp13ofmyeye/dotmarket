@@ -38,10 +38,14 @@ export default function Home() {
   const [confirmingQuick, setConfirmingQuick] = useState(false);
   const [showSoldOut, setShowSoldOut] = useState(false);
 
+  // 세션 복원으로 로그인했는지 여부 (soldOutIds 로드 전에 isAdmin이 true가 되는 경우)
+  const fromSession = useRef(false);
+
   // 관리자 세션 복원
   useEffect(() => {
     const saved = getSaved();
     if (saved) {
+      fromSession.current = true;
       setAdminPassword(saved);
       setIsAdmin(true);
     }
@@ -55,6 +59,11 @@ export default function Home() {
         const s = new Set(ids);
         soldOutIdsRef.current = s;
         setSoldOutIds(s);
+        // 세션 복원으로 이미 관리자인 경우 fetch 완료 후 pendingSoldOut 초기화
+        if (fromSession.current) {
+          setPendingSoldOut(new Set(s));
+          fromSession.current = false;
+        }
       })
       .catch(() => {});
   }, []);
@@ -62,7 +71,8 @@ export default function Home() {
   // 관리자 모드 진입/퇴장 시 품절처리 모드 자동 연동
   useEffect(() => {
     if (isAdmin) {
-      setPendingSoldOut(new Set(soldOutIds));
+      // 세션 복원인 경우 soldOutIds가 아직 비어있으므로 fetch 완료 후 초기화 (위에서 처리)
+      if (!fromSession.current) setPendingSoldOut(new Set(soldOutIds));
       setQuickMode(true);
     } else {
       setQuickMode(false);
