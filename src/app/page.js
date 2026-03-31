@@ -29,6 +29,9 @@ export default function Home() {
   const [cartItems, setCartItems] = useState({});
   const [showCart, setShowCart] = useState(false);
 
+  // 품절 숨기기 (일반 구매자용)
+  const [hideSoldOut, setHideSoldOut] = useState(false);
+
   // 품절 모드
   const [quickMode, setQuickMode] = useState(false);
   const [pendingSoldOut, setPendingSoldOut] = useState(new Set());
@@ -210,15 +213,19 @@ export default function Home() {
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (q) {
-      return products.filter((p) => p.name.toLowerCase().includes(q));
+      return products.filter((p) => {
+        if (hideSoldOut && soldOutIds.has(p.id)) return false;
+        return p.name.toLowerCase().includes(q);
+      });
     }
     return products.filter((p) => {
       if (showSoldOut) return soldOutIds.has(p.id);
+      if (hideSoldOut && soldOutIds.has(p.id)) return false;
       if (charFilter && p.character !== charFilter) return false;
       if (catFilter && p.category !== catFilter) return false;
       return true;
     });
-  }, [charFilter, catFilter, searchQuery, showSoldOut, soldOutIds]);
+  }, [charFilter, catFilter, searchQuery, showSoldOut, soldOutIds, hideSoldOut]);
 
   const characters = ["산리오", "치이카와", "해리포터", "죠죠", "뱅드림", "기타"];
   const categories = ["가챠", "피규어", "키링", "인형키링", "뱃지", "잡화", "다꾸"];
@@ -314,6 +321,8 @@ export default function Home() {
             isAdmin={isAdmin}
             showSoldOut={showSoldOut}
             setShowSoldOut={setShowSoldOut}
+            hideSoldOut={hideSoldOut}
+            setHideSoldOut={setHideSoldOut}
           />
         </div>
       </div>
@@ -332,17 +341,30 @@ export default function Home() {
               </>
             )}
           </p>
-          {isFiltered && !isSearching && (
-            <button
-              onClick={() => {
-                setCharFilter(null);
-                setCatFilter(null);
-              }}
-              className="text-xs text-pink-400 hover:underline"
-            >
-              필터 초기화 ✕
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {!isAdmin && (
+              <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={hideSoldOut}
+                  onChange={() => setHideSoldOut(v => !v)}
+                  className="accent-gray-500 w-3.5 h-3.5 cursor-pointer"
+                />
+                <span className="text-xs text-gray-400 whitespace-nowrap">품절 숨기기</span>
+              </label>
+            )}
+            {isFiltered && !isSearching && (
+              <button
+                onClick={() => {
+                  setCharFilter(null);
+                  setCatFilter(null);
+                }}
+                className="text-xs text-pink-400 hover:underline"
+              >
+                필터 초기화 ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {filtered.length === 0 ? (

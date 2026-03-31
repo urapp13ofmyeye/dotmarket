@@ -37,6 +37,8 @@ export default function FilterBar({
   isAdmin,
   showSoldOut,
   setShowSoldOut,
+  hideSoldOut,
+  setHideSoldOut,
 }) {
   return (
     <div className="border-b border-pink-100">
