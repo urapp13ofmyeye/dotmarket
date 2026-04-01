@@ -3,7 +3,9 @@
     "allow": [
       "Bash(node -e \":*)",
       "Bash(node:*)",
-      "Bash(find C:/Users/liz30/Desktop/DOT/dotmarket/src -type f -name *.js -o -name *.jsx -o -name *.css -o -name *.json)"
+      "Bash(find C:/Users/liz30/Desktop/DOT/dotmarket/src -type f -name *.js -o -name *.jsx -o -name *.css -o -name *.json)",
+      "Bash(gh repo:*)",
+      "Bash(git remote:*)"
     ]
   }
 }
